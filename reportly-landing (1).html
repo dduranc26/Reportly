@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reportly — Reportes de Meta Ads en 30 segundos para agencias</title>
+<meta name="description" content="Deja de perder 6-10 horas al mes haciendo reportes manuales. Reportly genera informes profesionales de Meta Ads con tu logo en 30 segundos.">
+<meta property="og:title" content="Reportly — Reportes de Meta Ads en 30 segundos">
+<meta property="og:description" content="Deja de perder 6-10 horas al mes haciendo reportes manuales para tus clientes.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://reportly.es">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+:root{
+  --ink:#0A0A0A;--cream:#F5F2ED;--warm:#EAE6DF;
+  --muted:#9A9490;--border:#DDD9D3;--gold:#C4A35A;
+  --ok:#2D6A4F;--warn:#9B4819;--danger:#8B1A1A;
+  --ff-display:'Playfair Display',Georgia,serif;
+  --ff-body:'DM Sans',system-ui,sans-serif;
+}
+body{font-family:var(--ff-body);color:var(--ink);background:var(--cream);line-height:1.6;overflow-x:hidden}
+::selection{background:var(--ink);color:var(--cream)}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:
+    radial-gradient(circle,rgba(180,165,140,.18) 1px,transparent 1px),
+    linear-gradient(to right,rgba(180,165,140,.08) 1px,transparent 1px),
+    linear-gradient(to bottom,rgba(180,165,140,.08) 1px,transparent 1px),
+    radial-gradient(ellipse 80% 60% at -5% -10%,rgba(196,163,90,.08) 0%,transparent 55%),
+    radial-gradient(ellipse 60% 50% at 105% 105%,rgba(130,100,180,.05) 0%,transparent 55%);
+  background-size:24px 24px,96px 96px,96px 96px,100% 100%,100% 100%;
+  pointer-events:none;z-index:0;
+}
+
+.container{max-width:760px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+.container-wide{max-width:1040px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;border-bottom:0.5px solid rgba(196,163,90,.2);background:rgba(245,242,237,.9);backdrop-filter:blur(16px)}
+.nav-inner{max-width:1040px;margin:0 auto;padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-text{font-family:var(--ff-display);font-size:16px;color:var(--ink);letter-spacing:.01em}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .15s}
+.nav-links a:hover{color:var(--ink)}
+.nav-cta{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;font-size:13px;font-weight:500;background:var(--ink);color:var(--cream);border:none;cursor:pointer;text-decoration:none;transition:all .15s}
+.nav-cta:hover{background:#1A1A1A;transform:translateY(-1px)}
+
+/* LOGO SVG — R estilizada */
+.logo-mark{flex-shrink:0}
+
+/* EYEBROW */
+.eyebrow{font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+/* HERO */
+.hero{padding:108px 0 88px;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;margin-bottom:32px;background:rgba(196,163,90,.1);border:0.5px solid rgba(196,163,90,.3);font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--warn)}
+.hero h1{font-family:var(--ff-display);font-size:clamp(3rem,7vw,5.2rem);line-height:1.04;color:var(--ink);margin-bottom:24px}
+.hero h1 em{font-style:italic;position:relative;display:inline-block}
+.hero h1 em::after{content:'';position:absolute;left:0;bottom:-4px;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.hero-sub{font-size:17px;color:var(--muted);line-height:1.7;max-width:520px;margin:0 auto 40px}
+.hero-cta-group{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:52px}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;font-size:14px;font-weight:500;letter-spacing:.03em;background:var(--ink);color:var(--cream);border:none;cursor:pointer;text-decoration:none;transition:all .15s}
+.btn-primary:hover{background:#1A1A1A;transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.15)}
+.btn-secondary{display:inline-flex;align-items:center;gap:6px;padding:14px 24px;font-size:14px;color:var(--muted);border:0.5px solid var(--border);background:rgba(255,255,255,.6);cursor:pointer;text-decoration:none;transition:all .15s}
+.btn-secondary:hover{color:var(--ink);border-color:var(--ink);background:rgba(255,255,255,.9)}
+.proof-strip{display:flex;align-items:center;justify-content:center;gap:40px;padding:20px 0;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border)}
+.proof-item{text-align:center}
+.proof-num{font-family:var(--ff-display);font-size:30px;color:var(--ink);display:block;line-height:1.1}
+.proof-label{font-size:11px;color:var(--muted);letter-spacing:.03em}
+.proof-divider{width:1px;height:36px;background:var(--border)}
+
+/* PAIN */
+.pain{padding:104px 0}
+.pain-label{margin-bottom:16px}
+.pain h2{font-family:var(--ff-display);font-size:clamp(2rem,4vw,3rem);color:var(--ink);margin-bottom:40px;line-height:1.15}
+.quotes-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:52px}
+.quote-card{background:rgba(255,255,255,.65);backdrop-filter:blur(8px);border:0.5px solid var(--border);padding:24px;position:relative;transition:transform .2s,box-shadow .2s}
+.quote-card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.07)}
+.quote-card::before{content:'"';font-family:var(--ff-display);font-size:52px;color:var(--gold);opacity:.35;position:absolute;top:8px;left:18px;line-height:1}
+.quote-text{font-size:13px;color:var(--ink);line-height:1.7;padding-top:24px;font-style:italic}
+.quote-source{font-size:11px;color:var(--muted);margin-top:12px;letter-spacing:.04em}
+.pain-cta{text-align:center}
+.pain-sub{font-size:15px;color:var(--muted);margin-bottom:32px;line-height:1.7}
+
+/* HOW */
+.how{padding:104px 0;background:rgba(255,255,255,.4);backdrop-filter:blur(4px);border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border)}
+.how h2{font-family:var(--ff-display);font-size:clamp(2rem,4vw,2.8rem);color:var(--ink);margin-bottom:12px}
+.how-sub{font-size:15px;color:var(--muted);margin-bottom:56px;max-width:480px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;position:relative}
+.steps::before{content:'';position:absolute;top:22px;left:calc(33.33% - 8px);width:calc(33.33% + 16px);height:0.5px;background:var(--border)}
+.step-num{font-family:var(--ff-display);font-size:52px;color:var(--gold);opacity:.2;position:absolute;top:-12px;right:0;line-height:1}
+.step{position:relative}
+.step-icon{width:44px;height:44px;background:var(--ink);display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+.step-icon svg{width:20px;height:20px;stroke:var(--cream);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.step h3{font-family:var(--ff-display);font-size:19px;color:var(--ink);margin-bottom:8px}
+.step p{font-size:13px;color:var(--muted);line-height:1.7}
+
+/* FEATURES */
+.features{padding:104px 0}
+.features h2{font-family:var(--ff-display);font-size:clamp(2rem,4vw,2.8rem);color:var(--ink);margin-bottom:12px}
+.features-sub{font-size:15px;color:var(--muted);margin-bottom:56px;max-width:480px}
+.features-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--border)}
+.feature{background:rgba(255,255,255,.7);backdrop-filter:blur(8px);padding:28px 30px;transition:background .2s}
+.feature:hover{background:rgba(255,255,255,.95)}
+.feature-icon{font-size:22px;margin-bottom:14px}
+.feature h3{font-size:15px;font-weight:500;color:var(--ink);margin-bottom:6px}
+.feature p{font-size:13px;color:var(--muted);line-height:1.7}
+
+/* PREVIEW */
+.preview{padding:104px 0;text-align:center}
+.preview h2{font-family:var(--ff-display);font-size:clamp(2rem,4vw,2.8rem);color:var(--ink);margin-bottom:12px}
+.preview-sub{font-size:15px;color:var(--muted);margin-bottom:52px}
+.mockup-frame{background:rgba(255,255,255,.85);backdrop-filter:blur(12px);border:0.5px solid rgba(196,163,90,.3);box-shadow:0 24px 80px rgba(0,0,0,.1),0 2px 0 rgba(255,255,255,.9);padding:36px;text-align:left;position:relative;overflow:hidden}
+.mockup-frame::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--ink),var(--gold))}
+.mockup-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px}
+.mockup-client{font-family:var(--ff-display);font-size:24px;color:var(--ink)}
+.mockup-date{font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:.04em}
+.mockup-score{width:60px;height:60px;border:1.5px solid var(--ok);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.mockup-score-num{font-family:var(--ff-display);font-size:24px;color:var(--ok);line-height:1}
+.mockup-score-label{font-size:8px;color:var(--ok);letter-spacing:.06em}
+.mockup-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.mockup-kpi{background:rgba(245,242,237,.8);padding:14px}
+.mockup-kpi-label{font-size:9px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.mockup-kpi-val{font-family:var(--ff-display);font-size:22px;color:var(--ink)}
+.mockup-analysis{font-size:12px;color:var(--muted);line-height:1.75;padding:14px 18px;border-left:2px solid var(--ink);background:rgba(245,242,237,.6);margin-bottom:18px}
+.mockup-recs{display:flex;flex-direction:column;gap:10px}
+.mockup-rec{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--ink)}
+.mockup-rec-num{width:20px;height:20px;background:var(--ink);color:var(--cream);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.mockup-badge{position:absolute;bottom:20px;right:20px;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);opacity:.4}
+
+/* PRICING */
+.pricing{padding:104px 0;background:rgba(255,255,255,.4);border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border)}
+.pricing h2{font-family:var(--ff-display);font-size:clamp(2rem,4vw,2.8rem);color:var(--ink);margin-bottom:12px}
+.pricing-sub{font-size:15px;color:var(--muted);margin-bottom:56px;max-width:480px}
+.pricing-note{font-size:13px;color:var(--muted);text-align:center;margin-top:24px}
+.plans{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;background:var(--border)}
+.plan{background:rgba(255,255,255,.75);backdrop-filter:blur(8px);padding:32px 28px}
+.plan.featured{background:var(--ink);color:var(--cream)}
+.plan-name{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.plan.featured .plan-name{color:rgba(245,242,237,.45)}
+.plan-price{font-family:var(--ff-display);font-size:46px;color:var(--ink);line-height:1;margin-bottom:2px}
+.plan.featured .plan-price{color:var(--cream)}
+.plan-period{font-size:12px;color:var(--muted);margin-bottom:28px}
+.plan.featured .plan-period{color:rgba(245,242,237,.45)}
+.plan-divider{height:0.5px;background:var(--border);margin-bottom:24px}
+.plan.featured .plan-divider{background:rgba(255,255,255,.1)}
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:32px}
+.plan-features li{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--muted)}
+.plan.featured .plan-features li{color:rgba(245,242,237,.7)}
+.plan-features li::before{content:'✓';font-size:11px;color:var(--ok);font-weight:600;margin-top:2px;flex-shrink:0}
+.plan.featured .plan-features li::before{color:var(--gold)}
+.plan-btn{display:block;width:100%;padding:13px;text-align:center;font-size:13px;font-weight:500;cursor:pointer;text-decoration:none;border:0.5px solid var(--border);color:var(--ink);background:transparent;transition:all .15s}
+.plan-btn:hover{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.plan.featured .plan-btn{background:var(--cream);color:var(--ink);border-color:var(--cream)}
+.plan.featured .plan-btn:hover{background:rgba(245,242,237,.85)}
+
+/* FAQ */
+.faq{padding:104px 0}
+.faq h2{font-family:var(--ff-display);font-size:clamp(2rem,4vw,2.8rem);color:var(--ink);margin-bottom:48px}
+.faq-list{display:flex;flex-direction:column}
+.faq-item{border-top:0.5px solid var(--border);padding:20px 0}
+.faq-item:last-child{border-bottom:0.5px solid var(--border)}
+.faq-q{font-size:15px;font-weight:500;color:var(--ink);cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.faq-icon{font-size:20px;color:var(--muted);transition:transform .25s;flex-shrink:0;margin-left:16px}
+.faq-item.open .faq-icon{transform:rotate(45deg)}
+.faq-a{font-size:14px;color:var(--muted);line-height:1.75;max-height:0;overflow:hidden;transition:max-height .35s ease,padding .25s ease}
+.faq-item.open .faq-a{max-height:300px;padding-top:14px}
+
+/* FINAL CTA */
+.final-cta{padding:120px 0;text-align:center;background:var(--ink);position:relative;overflow:hidden}
+.final-cta::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(196,163,90,.12) 0%,transparent 70%);pointer-events:none}
+.final-cta-tri{position:absolute;opacity:.06}
+.final-cta h2{font-family:var(--ff-display);font-size:clamp(2.5rem,6vw,4.5rem);color:var(--cream);line-height:1.08;margin-bottom:20px;position:relative;z-index:1}
+.final-cta p{font-size:16px;color:rgba(245,242,237,.5);margin-bottom:40px;position:relative;z-index:1}
+.final-cta-btn{display:inline-flex;align-items:center;gap:8px;padding:16px 36px;font-size:15px;font-weight:500;background:var(--gold);color:var(--ink);border:none;cursor:pointer;text-decoration:none;position:relative;z-index:1;transition:all .15s}
+.final-cta-btn:hover{background:#D4B36A;transform:translateY(-2px);box-shadow:0 12px 32px rgba(196,163,90,.3)}
+.final-cta-note{font-size:12px;color:rgba(245,242,237,.28);margin-top:16px;position:relative;z-index:1}
+
+/* FOOTER */
+footer{border-top:0.5px solid rgba(255,255,255,.08);background:var(--ink);padding:36px 0}
+.footer-inner{max-width:1040px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.footer-logo{display:flex;align-items:center;gap:10px}
+.footer-logo-text{font-family:var(--ff-display);font-size:14px;color:rgba(245,242,237,.55)}
+.footer-links{display:flex;gap:24px;flex-wrap:wrap}
+.footer-links a{font-size:12px;color:rgba(245,242,237,.3);text-decoration:none;transition:color .15s}
+.footer-links a:hover{color:rgba(245,242,237,.7)}
+
+/* ANIMATIONS */
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+
+@media(max-width:640px){
+  .quotes-grid,.features-grid,.plans{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr;gap:32px}
+  .steps::before{display:none}
+  .mockup-kpis{grid-template-columns:1fr 1fr}
+  .proof-strip{gap:20px;flex-wrap:wrap}
+  .proof-divider{display:none}
+  .nav-links{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo">
+      <!-- Logo: R estilizada con líneas finas -->
+      <svg class="logo-mark" width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <rect x="1" y="1" width="30" height="30" stroke="#0A0A0A" stroke-width="0.75"/>
+        <line x1="9" y1="7" x2="9" y2="25" stroke="#0A0A0A" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M9 7 H18 Q23 7 23 13 Q23 19 18 19 H9" stroke="#0A0A0A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="9" y1="19" x2="9" y2="19"/>
+        <path d="M16 19 L23 25" stroke="#C4A35A" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="23" cy="25" r="1.5" fill="#C4A35A"/>
+      </svg>
+      <span class="logo-text">Reportly</span>
+    </a>
+    <div class="nav-links">
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#precios">Precios</a>
+      <a href="mailto:hola@reportly.es">Contacto</a>
+    </div>
+    <a href="https://app.reportly.es" class="nav-cta">
+      Probar gratis
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge reveal">
+      <span>✦</span>
+      Exclusivo para agencias de marketing digital en España
+    </div>
+    <h1 class="reveal">
+      Deja de perder<br>
+      <em>40 horas al mes</em><br>
+      en reportes manuales.
+    </h1>
+    <p class="hero-sub reveal reveal-delay-1">
+      Reportly genera informes profesionales de Meta Ads con el logo de tu agencia
+      en 30 segundos. PDF descargable o link compartible directamente con tu cliente.
+    </p>
+    <div class="hero-cta-group reveal reveal-delay-2">
+      <a href="https://app.reportly.es" class="btn-primary">
+        Generar informe de demostración
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#como-funciona" class="btn-secondary">Ver cómo funciona</a>
+    </div>
+    <div class="proof-strip reveal reveal-delay-3">
+      <div class="proof-item">
+        <span class="proof-num">6–10h</span>
+        <span class="proof-label">ahorradas por cliente/mes</span>
+      </div>
+      <div class="proof-divider"></div>
+      <div class="proof-item">
+        <span class="proof-num">30s</span>
+        <span class="proof-label">por informe generado</span>
+      </div>
+      <div class="proof-divider"></div>
+      <div class="proof-item">
+        <span class="proof-num">100%</span>
+        <span class="proof-label">calibrado al sector</span>
+      </div>
+      <div class="proof-divider"></div>
+      <div class="proof-item">
+        <span class="proof-num">0€</span>
+        <span class="proof-label">para probarlo ahora</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAIN -->
+<section class="pain">
+  <div class="container">
+    <p class="eyebrow pain-label reveal">Lo que dicen los propietarios de agencias</p>
+    <h2 class="reveal">¿Te suena familiar?</h2>
+    <div class="quotes-grid">
+      <div class="quote-card reveal">
+        <p class="quote-text">"He visto agencias gastando 6-10 horas por cliente al mes solo en reportes. Es una locura la cantidad de tiempo que perdemos en algo que debería ser automático."</p>
+        <p class="quote-source">— r/agency · 847 votos</p>
+      </div>
+      <div class="quote-card reveal reveal-delay-1">
+        <p class="quote-text">"Estoy extrayendo datos manualmente de Google Ads, Meta y LinkedIn a Google Sheets, y me está llevando una eternidad. Tiene que haber una forma mejor."</p>
+        <p class="quote-source">— r/PPC · 612 votos</p>
+      </div>
+      <div class="quote-card reveal reveal-delay-2">
+        <p class="quote-text">"Mandamos a clientes PDFs que parecen hechos en 2009. Necesitamos algo que tenga buena pinta sin pasar media jornada en ello."</p>
+        <p class="quote-source">— r/digitalmarketing · 534 votos</p>
+      </div>
+      <div class="quote-card reveal reveal-delay-3">
+        <p class="quote-text">"Los reportes consumen demasiadas horas valiosas. Horas que podría dedicar a estrategia, a nuevos clientes, a hacer crecer la agencia. En cambio, copio y pego números."</p>
+        <p class="quote-source">— r/agency · 489 votos</p>
+      </div>
+    </div>
+    <div class="pain-cta reveal">
+      <p class="pain-sub">El reporting manual es el mayor destructor de tiempo en una agencia.<br>Reportly lo resuelve en 30 segundos.</p>
+      <a href="https://app.reportly.es" class="btn-primary">Ver el informe que generaría para tu agencia →</a>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="como-funciona">
+  <div class="container">
+    <p class="eyebrow reveal" style="margin-bottom:12px">Cómo funciona</p>
+    <h2 class="reveal">De datos a informe en 3 pasos.</h2>
+    <p class="how-sub reveal">Sin integraciones complejas. Sin configuración técnica. Solo resultado.</p>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">01</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <h3>Introduce los datos</h3>
+        <p>Nombre de la agencia, nombre del cliente, sector, presupuesto mensual y período. 30 segundos.</p>
+      </div>
+      <div class="step reveal reveal-delay-1">
+        <div class="step-num">02</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        </div>
+        <h3>La IA analiza</h3>
+        <p>Reportly genera métricas calibradas al sector y las analiza con IA en lenguaje natural que tu cliente entiende.</p>
+      </div>
+      <div class="step reveal reveal-delay-2">
+        <div class="step-num">03</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        <h3>Descarga o comparte</h3>
+        <p>PDF de 4 páginas con tu logo listo para enviar. O link directo al panel para que tu cliente lo vea en tiempo real.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="container">
+    <p class="eyebrow reveal" style="margin-bottom:12px">Qué incluye</p>
+    <h2 class="reveal">Todo lo que necesita un informe profesional.</h2>
+    <p class="features-sub reveal">Sin que tu equipo pierda una tarde en ello.</p>
+    <div class="features-grid">
+      <div class="feature reveal">
+        <div class="feature-icon">📊</div>
+        <h3>Análisis completo de campañas</h3>
+        <p>ROAS, CTR, CPC, CPM, conversiones — comparados con benchmarks reales del sector en España.</p>
+      </div>
+      <div class="feature reveal reveal-delay-1">
+        <div class="feature-icon">🤖</div>
+        <h3>Análisis en lenguaje natural</h3>
+        <p>La IA explica qué funcionó, qué no, y por qué — en español que tu cliente entiende sin ser técnico.</p>
+      </div>
+      <div class="feature reveal reveal-delay-2">
+        <div class="feature-icon">⚡</div>
+        <h3>3 recomendaciones accionables</h3>
+        <p>No métricas vacías. Acciones concretas para la semana siguiente con justificación clara.</p>
+      </div>
+      <div class="feature reveal reveal-delay-3">
+        <div class="feature-icon">🎨</div>
+        <h3>PDF con el logo de tu agencia</h3>
+        <p>Portada negra con tu marca, 4 páginas estilo editorial. Parece hecho por una agencia de 50 personas.</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feature-icon">🔗</div>
+        <h3>Enlace compartible con el cliente</h3>
+        <p>Panel web que tu cliente puede abrir en el móvil. Sin instalar nada, sin registrarse.</p>
+      </div>
+      <div class="feature reveal reveal-delay-1">
+        <div class="feature-icon">🎯</div>
+        <h3>Calibrado por sector</h3>
+        <p>E-commerce, clínicas, moda, inmobiliaria, restauración — benchmarks específicos para cada sector.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PREVIEW -->
+<section class="preview" id="demo">
+  <div class="container">
+    <p class="eyebrow reveal" style="margin-bottom:12px">Vista previa del informe</p>
+    <h2 class="reveal">Así es un informe de Reportly.</h2>
+    <p class="preview-sub reveal">Generado en 30 segundos. Listo para enviar a tu cliente.</p>
+    <div class="mockup-frame reveal">
+      <div class="mockup-header">
+        <div>
+          <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#9A9490;margin-bottom:6px">Informe Meta Ads · Últimos 30 días</div>
+          <div class="mockup-client">Moda Primavera SL</div>
+          <div class="mockup-date" style="margin-top:4px">Preparado por Marketing Pro Agency · Mayo 2026</div>
+        </div>
+        <div class="mockup-score">
+          <span class="mockup-score-num">74</span>
+          <span class="mockup-score-label">/ 100</span>
+        </div>
+      </div>
+      <div class="mockup-kpis">
+        <div class="mockup-kpi"><div class="mockup-kpi-label">Inversión</div><div class="mockup-kpi-val">2.840€</div></div>
+        <div class="mockup-kpi"><div class="mockup-kpi-label">ROAS global</div><div class="mockup-kpi-val" style="color:#2D6A4F">4.2x</div></div>
+        <div class="mockup-kpi"><div class="mockup-kpi-label">CTR medio</div><div class="mockup-kpi-val">2.1%</div></div>
+        <div class="mockup-kpi"><div class="mockup-kpi-label">Conversiones</div><div class="mockup-kpi-val">87</div></div>
+      </div>
+      <div class="mockup-analysis">
+        La cuenta muestra un rendimiento sólido con un ROAS de 4.2x, por encima del benchmark del sector moda (3.5–7x). La campaña Advantage+ Shopping concentra el 60% del presupuesto y genera el mayor volumen de conversiones. El CTR del 2.1% supera el objetivo del 1.8%.
+      </div>
+      <div class="mockup-recs">
+        <div class="mockup-rec"><div class="mockup-rec-num">1</div><span>Aumentar presupuesto en Advantage+ Shopping un 20% — está en zona de escala óptima con ROAS 5.1x.</span></div>
+        <div class="mockup-rec"><div class="mockup-rec-num">2</div><span>Pausar campaña Prospecting Intereses — CPM de 18€ duplica el benchmark. Redirigir presupuesto a Lookalike Compradores.</span></div>
+        <div class="mockup-rec"><div class="mockup-rec-num">3</div><span>Activar Retargeting Carritos Abandonados — actualmente pausada y supone dejar conversiones sobre la mesa.</span></div>
+      </div>
+      <div class="mockup-badge">Generado por Reportly · reportly.es</div>
+    </div>
+    <div style="margin-top:36px" class="reveal">
+      <a href="https://app.reportly.es" class="btn-primary" style="margin:0 auto;display:inline-flex">
+        Genera el tuyo ahora — es gratis
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="precios">
+  <div class="container">
+    <p class="eyebrow reveal" style="margin-bottom:12px">Precios</p>
+    <h2 class="reveal">Claro. Sin sorpresas.</h2>
+    <p class="pricing-sub reveal">Cancela cuando quieras. Sin permanencias ni letra pequeña.</p>
+    <div class="plans reveal">
+      <div class="plan">
+        <div class="plan-name">Inicial</div>
+        <div class="plan-price">297€</div>
+        <div class="plan-period">/mes · hasta 10 clientes</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li>Hasta 10 informes al mes</li>
+          <li>PDF con el logo de tu agencia</li>
+          <li>Enlace compartible con el cliente</li>
+          <li>Todos los sectores disponibles</li>
+          <li>Soporte por correo electrónico</li>
+        </ul>
+        <a href="mailto:hola@reportly.es?subject=Quiero%20el%20plan%20Inicial%20de%20Reportly&body=Hola%2C%20me%20interesa%20el%20plan%20Inicial%20de%20297%E2%82%AC%2Fmes.%20%C2%BFPodr%C3%ADamos%20hablar%3F" class="plan-btn">Empezar con el plan Inicial</a>
+      </div>
+      <div class="plan featured">
+        <div class="plan-name">Crecimiento ✦ Más popular</div>
+        <div class="plan-price">597€</div>
+        <div class="plan-period">/mes · hasta 30 clientes</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li>Hasta 30 informes al mes</li>
+          <li>PDF con el logo de tu agencia</li>
+          <li>Enlace compartible con el cliente</li>
+          <li>Todos los sectores disponibles</li>
+          <li>Sesión mensual de estrategia</li>
+          <li>Soporte prioritario por WhatsApp</li>
+          <li>Alertas automáticas semanales</li>
+        </ul>
+        <a href="mailto:hola@reportly.es?subject=Quiero%20el%20plan%20Crecimiento%20de%20Reportly&body=Hola%2C%20me%20interesa%20el%20plan%20Crecimiento%20de%20597%E2%82%AC%2Fmes.%20%C2%BFPodr%C3%ADamos%20hablar%3F" class="plan-btn">Empezar con el plan Crecimiento</a>
+      </div>
+      <div class="plan">
+        <div class="plan-name">Agencia Pro</div>
+        <div class="plan-price">997€</div>
+        <div class="plan-period">/mes · clientes ilimitados</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li>Clientes ilimitados</li>
+          <li>Marca blanca completa</li>
+          <li>Integración real con Meta Ads API</li>
+          <li>Panel en directo por cliente</li>
+          <li>2 sesiones estratégicas al mes</li>
+          <li>Gestor de cuenta dedicado</li>
+        </ul>
+        <a href="mailto:hola@reportly.es?subject=Quiero%20el%20plan%20Agencia%20Pro%20de%20Reportly&body=Hola%2C%20me%20interesa%20el%20plan%20Agencia%20Pro%20de%20997%E2%82%AC%2Fmes.%20%C2%BFPodr%C3%ADamos%20hablar%3F" class="plan-btn">Hablar con el equipo</a>
+      </div>
+    </div>
+    <p class="pricing-note reveal" style="margin-top:28px">¿No estás seguro qué plan necesitas? <a href="mailto:hola@reportly.es" style="color:var(--ink);text-decoration:underline;text-underline-offset:3px">Escríbenos</a> y te ayudamos a elegir.</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+  <div class="container">
+    <h2 class="reveal">Preguntas frecuentes.</h2>
+    <div class="faq-list">
+      <div class="faq-item reveal">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          ¿Los datos del informe son reales o simulados?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">En la versión de demostración los datos son simulados pero calibrados con benchmarks reales del sector en España. En los planes de pago conectamos directamente con tu cuenta de Meta Ads y los datos son 100% reales.</div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          ¿Mis credenciales de Meta Ads están seguras?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">Sí. Usamos el sistema de permisos oficial de Meta — el mismo que usan Hootsuite o AgencyAnalytics. Solo pedimos acceso de lectura, no podemos modificar nada en tu cuenta. Puedes revocar el acceso en cualquier momento desde Meta Business.</div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          ¿En qué se diferencia Reportly de AgencyAnalytics o Looker Studio?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">AgencyAnalytics muestra datos en paneles que el cliente tiene que interpretar. Looker Studio requiere configuración técnica por cada cliente. Reportly genera un informe en lenguaje natural — el análisis ya viene hecho, con recomendaciones concretas. En 30 segundos, sin configuración.</div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          ¿Puedo poner el logo y nombre de mi agencia?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">Sí, en todos los planes. El PDF lleva tu logo, el nombre de tu agencia y el nombre de tu cliente. Tu cliente recibe el informe como si lo hubieras preparado tú manualmente.</div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          ¿Puedo cancelar en cualquier momento?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">Sí. Sin permanencias ni penalizaciones. Si cancelas antes de que acabe el mes, tienes acceso hasta el final del período pagado.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <svg class="final-cta-tri" style="top:-60px;right:-40px;width:400px;height:400px" viewBox="0 0 400 400"><polygon points="200,20 380,360 20,360" fill="#C4A35A"/></svg>
+  <svg class="final-cta-tri" style="bottom:-40px;left:-60px;width:300px;height:300px" viewBox="0 0 300 300"><polygon points="150,10 280,270 20,270" stroke="#C4A35A" stroke-width="1" fill="none"/></svg>
+  <div class="container" style="position:relative;z-index:1">
+    <h2>El próximo informe<br>no debería costarte<br>6 horas.</h2>
+    <p>Genera tu primer informe ahora. Gratis. Sin registrarte.</p>
+    <a href="https://app.reportly.es" class="final-cta-btn">
+      Probar Reportly gratis
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <p class="final-cta-note">Sin tarjeta de crédito · Sin configuración · 30 segundos</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
+        <rect x="1" y="1" width="30" height="30" stroke="rgba(245,242,237,0.3)" stroke-width="0.75"/>
+        <line x1="9" y1="7" x2="9" y2="25" stroke="rgba(245,242,237,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M9 7 H18 Q23 7 23 13 Q23 19 18 19 H9" stroke="rgba(245,242,237,0.6)" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M16 19 L23 25" stroke="#C4A35A" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="23" cy="25" r="1.5" fill="#C4A35A"/>
+      </svg>
+      <span class="footer-logo-text">Reportly</span>
+    </div>
+    <div class="footer-links">
+      <a href="mailto:hola@reportly.es">hola@reportly.es</a>
+      <a href="#precios">Precios</a>
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="https://app.reportly.es">Acceder a la app</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); observer.unobserve(e.target) } })
+}, { threshold: 0.1 })
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
+
+function toggleFaq(el) {
+  const item = el.parentElement
+  const isOpen = item.classList.contains('open')
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'))
+  if(!isOpen) item.classList.add('open')
+}
+
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault()
+    const t = document.querySelector(a.getAttribute('href'))
+    if(t) t.scrollIntoView({ behavior:'smooth', block:'start' })
+  })
+})
+</script>
+</body>
+</html>
