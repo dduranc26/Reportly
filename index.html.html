@@ -5,365 +5,452 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Reportly — Reportes de Meta Ads en 30 segundos para agencias</title>
 <meta name="description" content="Deja de perder 6-10 horas al mes haciendo reportes manuales. Reportly genera informes profesionales de Meta Ads con tu logo en 30 segundos.">
+<meta property="og:title" content="Reportly — Reportes de Meta Ads en 30 segundos">
+<meta property="og:description" content="Genera informes profesionales con el logo de tu agencia en 30 segundos. Usado por agencias de marketing digital en España.">
+<meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
 :root{
   --ink:#0A0A0A;--cream:#F7F4EF;--white:#FFFFFF;
-  --muted:#9A9490;--border:#E2DDD7;--gold:#C4A35A;
-  --ok:#2D6A4F;--warn:#9B4819;
-  --ff-display:'Playfair Display',Georgia,serif;
-  --ff-body:'DM Sans',system-ui,sans-serif;
+  --muted:#9A9490;--border:#E2DDD7;--border-l:#EDE9E3;
+  --gold:#C4A35A;--gold-l:#D4B36A;
+  --ok:#2D6A4F;--warn:#9B4819;--err:#C0392B;
+  --ff-d:'Playfair Display',Georgia,serif;
+  --ff-b:'DM Sans',system-ui,sans-serif;
+  --sh-sm:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --sh-md:0 4px 16px rgba(0,0,0,.08),0 2px 6px rgba(0,0,0,.04);
+  --sh-lg:0 16px 48px rgba(0,0,0,.12),0 4px 16px rgba(0,0,0,.06);
+  --sh-xl:0 32px 80px rgba(0,0,0,.15),0 8px 24px rgba(0,0,0,.06);
 }
-body{font-family:var(--ff-body);color:var(--ink);background:var(--cream);line-height:1.6;overflow-x:hidden;cursor:none}
+body{font-family:var(--ff-b);color:var(--ink);background:var(--cream);line-height:1.6;overflow-x:hidden;cursor:none}
 ::selection{background:var(--ink);color:var(--cream)}
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:#C4B49A;border-radius:2px}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#C4B49A;border-radius:2px}
 
-/* ── CUSTOM CURSOR ── */
-#cursor{
-  position:fixed;width:10px;height:10px;
-  background:var(--ink);border-radius:50%;
-  pointer-events:none;z-index:9999;
-  transform:translate(-50%,-50%);
-  transition:transform 0.1s ease, width 0.25s ease, height 0.25s ease, background 0.25s ease;
-  mix-blend-mode:difference;
-}
-#cursor-ring{
-  position:fixed;width:36px;height:36px;
-  border:1px solid rgba(10,10,10,0.3);border-radius:50%;
-  pointer-events:none;z-index:9998;
-  transform:translate(-50%,-50%);
-  transition:transform 0.12s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
-}
-body:hover #cursor{opacity:1}
+/* CURSOR */
+#cursor{position:fixed;width:10px;height:10px;background:var(--ink);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .1s,width .25s,height .25s,background .25s;mix-blend-mode:difference}
+#cursor-ring{position:fixed;width:36px;height:36px;border:1px solid rgba(10,10,10,.3);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .12s,width .3s,height .3s,opacity .3s}
 
-/* ── ANIMATED MESH BACKGROUND ── */
-.mesh-bg{
-  position:fixed;inset:0;z-index:0;overflow:hidden;
-  background:var(--cream);
-}
+/* MESH BG */
+.mesh-bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:var(--cream)}
 .mesh-bg canvas{position:absolute;inset:0;width:100%;height:100%}
+.mesh-bg::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 80% at 50% 50%,transparent 40%,rgba(237,233,226,.6) 100%);pointer-events:none}
 
-/* Subtle vignette */
-.mesh-bg::after{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 80% 80% at 50% 50%, transparent 40%, rgba(237,233,226,0.6) 100%);
-  pointer-events:none;
-}
-
-/* ── LAYOUT ── */
+/* LAYOUT */
 .container{max-width:760px;margin:0 auto;padding:0 28px;position:relative;z-index:1}
 .container-wide{max-width:1060px;margin:0 auto;padding:0 28px;position:relative;z-index:1}
 
-/* ── NAV ── */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  background:rgba(247,244,239,0.82);backdrop-filter:blur(20px);
-  border-bottom:0.5px solid rgba(196,163,90,0.18);
-  transition:box-shadow 0.3s;
-}
-nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,0.06)}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(247,244,239,.88);backdrop-filter:blur(20px);border-bottom:.5px solid rgba(196,163,90,.15);transition:box-shadow .3s,background .3s}
+nav.scrolled{box-shadow:var(--sh-sm);background:rgba(247,244,239,.96)}
 .nav-inner{max-width:1060px;margin:0 auto;padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between}
 .logo{display:flex;align-items:center;gap:12px;text-decoration:none}
-.logo-text{font-family:var(--ff-display);font-size:16px;color:var(--ink)}
-
-/* ── NEW LOGO: animated arc + dot ── */
+.logo-text{font-family:var(--ff-d);font-size:16px;color:var(--ink);letter-spacing:-.01em}
 .logo-symbol svg{overflow:visible}
-.logo-arc{stroke-dasharray:60;stroke-dashoffset:60;animation:drawArc 1.2s cubic-bezier(0.16,1,0.3,1) 0.2s forwards}
+.logo-arc{stroke-dasharray:60;stroke-dashoffset:60;animation:drawArc 1.2s cubic-bezier(.16,1,.3,1) .2s forwards}
 @keyframes drawArc{to{stroke-dashoffset:0}}
-.logo-dot-gold{transform-origin:center;animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) 1.1s both}
+.logo-dot-gold{transform-origin:center;animation:popIn .4s cubic-bezier(.34,1.56,.64,1) 1.1s both}
 @keyframes popIn{from{transform:scale(0)}to{transform:scale(1)}}
-
-.nav-links{display:flex;align-items:center;gap:28px}
+.nav-links{display:flex;align-items:center;gap:24px}
 .nav-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .2s;cursor:none}
 .nav-links a:hover{color:var(--ink)}
-.nav-cta{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:9px 20px;font-size:13px;font-weight:500;
-  background:var(--ink);color:var(--cream);
-  border:none;cursor:none;text-decoration:none;
-  transition:all .2s;position:relative;overflow:hidden;
-}
-.nav-cta::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(90deg,transparent,rgba(196,163,90,0.25),transparent);
-  transform:translateX(-100%);transition:transform 0.5s;
-}
+.nav-right{display:flex;align-items:center;gap:8px}
+.nav-login{font-size:13px;color:var(--muted);text-decoration:none;padding:9px 14px;cursor:none;transition:color .2s}
+.nav-login:hover{color:var(--ink)}
+.nav-cta{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;font-size:13px;font-weight:500;background:var(--ink);color:var(--cream);border:none;cursor:none;text-decoration:none;transition:all .2s;position:relative;overflow:hidden}
+.nav-cta::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(196,163,90,.25),transparent);transform:translateX(-100%);transition:transform .5s}
 .nav-cta:hover::before{transform:translateX(100%)}
-.nav-cta:hover{background:#1a1a1a;transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,0.15)}
+.nav-cta:hover{background:#1a1a1a;transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.15)}
 
-/* ── HERO ── */
-.hero{padding:140px 0 100px;text-align:center;position:relative;z-index:1}
-
-/* Word-by-word reveal */
-.hero-badge{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:5px 16px;margin-bottom:36px;
-  background:rgba(196,163,90,0.09);
-  border:0.5px solid rgba(196,163,90,0.3);
-  font-size:11px;font-weight:500;letter-spacing:0.1em;
-  text-transform:uppercase;color:var(--warn);
-  opacity:0;animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s forwards;
-}
+/* HERO */
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.hero{padding:120px 0 80px;position:relative;z-index:1}
+.hero-inner{max-width:1060px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:1fr 420px;gap:64px;align-items:center}
 
-.hero-h1{
-  font-family:var(--ff-display);
-  font-size:clamp(3rem,7vw,5.6rem);
-  line-height:1.02;color:var(--ink);margin-bottom:28px;
-}
-/* Each word animates in */
-.word{
-  display:inline-block;
-  opacity:0;transform:translateY(24px);
-  transition:opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1);
-}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;margin-bottom:28px;background:rgba(196,163,90,.09);border:.5px solid rgba(196,163,90,.3);font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--warn);opacity:0;animation:fadeUp .8s cubic-bezier(.16,1,.3,1) .3s forwards}
+.hero-h1{font-family:var(--ff-d);font-size:clamp(2.6rem,5vw,4.4rem);line-height:1.03;color:var(--ink);margin-bottom:24px;letter-spacing:-.02em}
+.word{display:inline-block;opacity:0;transform:translateY(24px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1)}
 .word.visible{opacity:1;transform:translateY(0)}
 .word-italic{font-style:italic}
-.word-gold{color:var(--gold)}
-em.block{display:block}
-
-/* Gold underline on italic */
 .italic-wrap{position:relative;display:inline-block}
-.italic-wrap::after{
-  content:'';position:absolute;left:0;bottom:-3px;width:0;height:1.5px;
-  background:var(--gold);transition:width 1.2s cubic-bezier(0.16,1,0.3,1) 0.8s;
-}
+.italic-wrap::after{content:'';position:absolute;left:0;bottom:-3px;width:0;height:1.5px;background:var(--gold);transition:width 1.2s cubic-bezier(.16,1,.3,1) .8s}
 .italic-wrap.visible::after{width:100%}
+.hero-sub{font-size:16px;color:var(--muted);line-height:1.75;max-width:460px;margin-bottom:32px;opacity:0;animation:fadeUp .8s cubic-bezier(.16,1,.3,1) .9s forwards}
+.cta-group{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:36px;opacity:0;animation:fadeUp .8s cubic-bezier(.16,1,.3,1) 1.1s forwards}
 
-.hero-sub{
-  font-size:17px;color:var(--muted);line-height:1.78;
-  max-width:500px;margin:0 auto 44px;
-  opacity:0;animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.9s forwards;
-}
-.cta-group{
-  display:flex;align-items:center;justify-content:center;
-  gap:12px;flex-wrap:wrap;margin-bottom:56px;
-  opacity:0;animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 1.1s forwards;
-}
-.btn-primary{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:15px 30px;font-size:14px;font-weight:500;
-  background:var(--ink);color:var(--cream);
-  border:none;cursor:none;text-decoration:none;
-  transition:all .2s;position:relative;overflow:hidden;
-}
-.btn-primary::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(196,163,90,0.2),transparent 60%);
-  opacity:0;transition:opacity 0.3s;
-}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:15px 28px;font-size:14px;font-weight:500;background:var(--ink);color:var(--cream);border:none;cursor:none;text-decoration:none;transition:all .2s;position:relative;overflow:hidden}
+.btn-primary::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(196,163,90,.2),transparent 60%);opacity:0;transition:opacity .3s}
 .btn-primary:hover::after{opacity:1}
-.btn-primary:hover{background:#111;transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,0,0,0.18)}
-.btn-ghost{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:15px 24px;font-size:14px;color:var(--muted);
-  border:0.5px solid var(--border);background:rgba(255,255,255,0.45);
-  cursor:none;text-decoration:none;transition:all .2s;
-  backdrop-filter:blur(8px);
-}
-.btn-ghost:hover{color:var(--ink);border-color:var(--ink);background:rgba(255,255,255,0.9);transform:translateY(-2px)}
+.btn-primary:hover{background:#111;transform:translateY(-3px);box-shadow:var(--sh-lg)}
+.btn-ghost{display:inline-flex;align-items:center;gap:6px;padding:15px 22px;font-size:14px;color:var(--muted);border:.5px solid var(--border);background:rgba(255,255,255,.45);cursor:none;text-decoration:none;transition:all .2s;backdrop-filter:blur(8px)}
+.btn-ghost:hover{color:var(--ink);border-color:var(--ink);background:rgba(255,255,255,.9);transform:translateY(-2px)}
 
-.proof-strip{
-  display:flex;align-items:center;justify-content:center;gap:48px;
-  padding:24px 0;
-  border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);
-  opacity:0;animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 1.3s forwards;
-}
-.proof-item{text-align:center}
-.proof-num{
-  font-family:var(--ff-display);font-size:32px;
-  color:var(--ink);display:block;line-height:1.1;
-}
-.proof-label{font-size:11px;color:var(--muted);letter-spacing:0.03em}
-.proof-div{width:1px;height:40px;background:var(--border)}
+.hero-social-proof{display:flex;align-items:center;gap:14px;opacity:0;animation:fadeUp .8s cubic-bezier(.16,1,.3,1) 1.3s forwards}
+.proof-avatars{display:flex}
+.proof-av{width:30px;height:30px;border-radius:50%;border:2px solid var(--cream);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff}
+.proof-av:not(:first-child){margin-left:-8px}
+.proof-av:nth-child(1){background:#5B7FA6}
+.proof-av:nth-child(2){background:#6B5B7F}
+.proof-av:nth-child(3){background:#7F6B5B}
+.proof-av:nth-child(4){background:#5B7F6B}
+.proof-words{font-size:12px;color:var(--muted);line-height:1.5}
+.proof-words strong{color:var(--ink);font-weight:500}
+.proof-stars{color:var(--gold);font-size:12px;display:block}
 
-/* ── SECTIONS ── */
-.section{padding:110px 0;position:relative;z-index:1}
-.section-alt{
-  padding:110px 0;position:relative;z-index:1;
-  background:rgba(255,255,255,0.45);backdrop-filter:blur(8px);
-  border-top:0.5px solid rgba(255,255,255,0.8);
-  border-bottom:0.5px solid rgba(255,255,255,0.8);
-  box-shadow:0 0 0 0.5px var(--border) inset;
-}
-.eyebrow{font-size:10px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:14px}
-.section-title{font-family:var(--ff-display);font-size:clamp(2rem,4vw,3.2rem);color:var(--ink);margin-bottom:12px;line-height:1.1}
-.section-sub{font-size:15px;color:var(--muted);margin-bottom:52px;max-width:480px;line-height:1.75}
+/* Hero proof strip */
+.proof-strip{display:flex;align-items:center;gap:36px;padding:20px 0;border-top:.5px solid var(--border);opacity:0;animation:fadeUp .8s cubic-bezier(.16,1,.3,1) 1.5s forwards;margin-top:8px}
+.proof-item{text-align:left}
+.proof-num{font-family:var(--ff-d);font-size:26px;color:var(--ink);display:block;line-height:1.1}
+.proof-label{font-size:10px;color:var(--muted);letter-spacing:.02em}
+.proof-div{width:1px;height:28px;background:var(--border)}
 
-/* Scroll reveal — staggered chars */
-.reveal-line{overflow:hidden;display:block}
-.reveal-line .inner{
-  display:block;
-  transform:translateY(110%);
-  transition:transform 0.7s cubic-bezier(0.16,1,0.3,1);
-}
-.reveal-line.visible .inner{transform:translateY(0)}
+/* Hero right card */
+.hero-card-wrap{position:relative;opacity:0;animation:cardIn 1s cubic-bezier(.16,1,.3,1) .7s forwards}
+@keyframes cardIn{from{opacity:0;transform:translateY(32px) rotate(1deg)}to{opacity:1;transform:translateY(0) rotate(0)}}
+.hero-card{background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border:.5px solid rgba(196,163,90,.2);box-shadow:var(--sh-xl);overflow:hidden;position:relative}
+.hero-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--ink) 50%,var(--gold));z-index:1}
 
-.reveal{opacity:0;transform:translateY(32px);transition:opacity 0.7s cubic-bezier(0.16,1,0.3,1),transform 0.7s cubic-bezier(0.16,1,0.3,1)}
+/* Browser chrome */
+.hc-chrome{background:#EFECE7;padding:9px 14px;display:flex;align-items:center;gap:8px;border-bottom:.5px solid var(--border)}
+.hc-dots{display:flex;gap:5px}
+.hc-dot{width:9px;height:9px;border-radius:50%}
+.hc-dot:nth-child(1){background:#FF5F57}
+.hc-dot:nth-child(2){background:#FEBC2E}
+.hc-dot:nth-child(3){background:#28C840}
+.hc-url{flex:1;background:rgba(255,255,255,.65);border:.5px solid var(--border);border-radius:3px;padding:4px 10px;font-size:10px;color:var(--muted)}
+
+.hc-body{padding:20px}
+.hc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.hc-clabel{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.hc-cname{font-family:var(--ff-d);font-size:17px;color:var(--ink)}
+.hc-date{font-size:9px;color:var(--muted)}
+.hc-score{width:46px;height:46px;border:1.5px solid var(--ok);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.hc-score-n{font-family:var(--ff-d);font-size:18px;color:var(--ok);line-height:1}
+.hc-score-l{font-size:7px;color:var(--ok);letter-spacing:.04em}
+
+.hc-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:12px}
+.hc-kpi{background:rgba(247,244,239,.9);padding:9px 7px}
+.hc-kl{font-size:7px;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:2px}
+.hc-kv{font-family:var(--ff-d);font-size:15px;color:var(--ink)}
+.hc-kd{font-size:8px;margin-top:1px}
+.hc-kd.ok{color:var(--ok)}.hc-kd.err{color:var(--err)}
+
+/* Mini bars in hero card */
+.hc-bars{margin-bottom:12px}
+.hc-bars-label{font-size:7px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.hc-bar-row{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.hc-bar-name{font-size:8px;color:var(--muted);width:80px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hc-bar-track{flex:1;height:5px;background:var(--border-l);overflow:hidden}
+.hc-bar-fill{height:100%;transform-origin:left;transform:scaleX(0);animation:barGrow 1.2s cubic-bezier(.16,1,.3,1) 1.2s forwards}
+@keyframes barGrow{to{transform:scaleX(1)}}
+.hc-bar-val{font-size:8px;color:var(--ink);font-weight:500;width:24px;text-align:right;flex-shrink:0}
+
+.hc-insight{font-size:9px;color:var(--muted);line-height:1.7;padding:9px 11px;border-left:1.5px solid var(--ink);background:rgba(247,244,239,.7);margin-bottom:10px}
+.hc-recs{display:flex;flex-direction:column;gap:5px}
+.hc-rec{display:flex;align-items:flex-start;gap:7px;font-size:9px;color:var(--ink);padding:6px 8px;background:rgba(247,244,239,.6);transition:background .2s}
+.hc-rec:hover{background:rgba(247,244,239,1)}
+.hc-rec-n{width:15px;height:15px;background:var(--ink);color:var(--cream);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:500;flex-shrink:0}
+.hc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:10px;margin-top:8px;border-top:.5px solid var(--border-l)}
+.hc-watermark{font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);opacity:.4}
+.hc-actions{display:flex;gap:5px}
+.hc-btn{font-size:8px;padding:4px 9px;font-weight:500;cursor:none;transition:all .2s;font-family:var(--ff-b)}
+.hc-btn.p{background:var(--ink);color:var(--cream);border:none}
+.hc-btn.s{border:.5px solid var(--border);color:var(--muted);background:none}
+.hc-btn.p:hover{background:#333}.hc-btn.s:hover{border-color:var(--ink);color:var(--ink)}
+
+/* Floating live badge */
+.hero-float{position:absolute;bottom:-14px;left:-18px;background:var(--ok);color:#fff;padding:7px 13px;font-size:10px;font-weight:500;display:flex;align-items:center;gap:7px;box-shadow:var(--sh-md)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.5);position:relative;flex-shrink:0}
+.live-dot::after{content:'';position:absolute;inset:-2px;border-radius:50%;border:1.5px solid rgba(255,255,255,.35);animation:livePulse 1.5s ease infinite}
+@keyframes livePulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.7);opacity:0}}
+
+/* LOGO STRIP */
+.logo-strip{padding:32px 0;border-top:.5px solid var(--border);border-bottom:.5px solid var(--border);background:rgba(255,255,255,.35);backdrop-filter:blur(4px);position:relative;z-index:1}
+.logo-strip-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:22px}
+.logo-strip-logos{display:flex;align-items:center;justify-content:center;gap:40px;flex-wrap:wrap}
+.strip-logo{display:flex;align-items:center;gap:7px;opacity:.4;transition:opacity .2s;cursor:none}
+.strip-logo:hover{opacity:.75}
+.strip-logo-name{font-size:13px;font-weight:600;color:var(--ink);letter-spacing:-.01em}
+.strip-divider{width:1px;height:20px;background:var(--border)}
+
+/* SECTIONS */
+.section{padding:100px 0;position:relative;z-index:1}
+.section-alt{padding:100px 0;position:relative;z-index:1;background:rgba(255,255,255,.45);backdrop-filter:blur(8px);border-top:.5px solid rgba(255,255,255,.8);border-bottom:.5px solid rgba(255,255,255,.8);box-shadow:0 0 0 .5px var(--border) inset}
+.eyebrow{font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:12px}
+.section-title{font-family:var(--ff-d);font-size:clamp(1.9rem,4vw,3rem);color:var(--ink);margin-bottom:10px;line-height:1.08;letter-spacing:-.02em}
+.section-sub{font-size:15px;color:var(--muted);margin-bottom:48px;max-width:480px;line-height:1.75}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
 .reveal.visible{opacity:1;transform:translateY(0)}
-.d1{transition-delay:0.08s}.d2{transition-delay:0.16s}.d3{transition-delay:0.24s}.d4{transition-delay:0.32s}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
 
-/* ── QUOTES ── */
-.quotes-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:52px}
-.quote-card{
-  background:rgba(255,255,255,0.65);backdrop-filter:blur(12px);
-  border:0.5px solid rgba(255,255,255,0.9);
-  box-shadow:0 2px 12px rgba(0,0,0,0.04),0 1px 0 rgba(255,255,255,0.8) inset;
-  padding:26px;position:relative;cursor:none;
-  transition:transform .25s cubic-bezier(0.16,1,0.3,1),box-shadow .25s;
-}
-.quote-card:hover{transform:translateY(-5px) rotate(-0.3deg);box-shadow:0 16px 40px rgba(0,0,0,0.08)}
-.quote-card::before{content:'"';font-family:var(--ff-display);font-size:56px;color:var(--gold);opacity:0.28;position:absolute;top:6px;left:18px;line-height:1}
-.quote-text{font-size:13px;color:var(--ink);line-height:1.75;padding-top:28px;font-style:italic}
-.quote-source{font-size:11px;color:var(--muted);margin-top:12px;letter-spacing:0.04em}
+/* QUOTES */
+.quotes-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:48px}
+.quote-card{background:rgba(255,255,255,.65);backdrop-filter:blur(12px);border:.5px solid rgba(255,255,255,.9);box-shadow:var(--sh-sm),0 1px 0 rgba(255,255,255,.8) inset;padding:22px;position:relative;cursor:none;transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s;border-radius:0}
+.quote-card:hover{transform:translateY(-5px) rotate(-.3deg);box-shadow:var(--sh-lg)}
+.quote-card::before{content:'"';font-family:var(--ff-d);font-size:50px;color:var(--gold);opacity:.22;position:absolute;top:4px;left:15px;line-height:1}
+.quote-stars{color:var(--gold);font-size:11px;letter-spacing:2px;padding-top:4px;position:relative;z-index:1;margin-bottom:8px}
+.quote-text{font-size:13px;color:var(--ink);line-height:1.75;font-style:italic}
+.quote-footer{display:flex;align-items:center;gap:8px;margin-top:12px}
+.quote-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;flex-shrink:0}
+.quote-av.a{background:#5B7FA6}.quote-av.b{background:#7F6B5B}.quote-av.c{background:#6B5B7F}.quote-av.d{background:#5B7F6B}
+.quote-source{font-size:11px;color:var(--muted)}
 .center-cta{text-align:center}
-.center-sub{font-size:15px;color:var(--muted);margin-bottom:32px;line-height:1.75}
+.center-sub{font-size:15px;color:var(--muted);margin-bottom:28px;line-height:1.75}
 
-/* ── STEPS ── */
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:48px;position:relative}
-.steps::before{content:'';position:absolute;top:22px;left:calc(33.33% - 4px);width:calc(33.33% + 8px);height:0.5px;background:linear-gradient(90deg,var(--border),var(--gold),var(--border))}
+/* STEPS */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;position:relative}
+.steps::before{content:'';position:absolute;top:22px;left:calc(33.33% - 4px);width:calc(33.33% + 8px);height:.5px;background:linear-gradient(90deg,var(--border),var(--gold),var(--border))}
 .step{position:relative}
-.step-num{font-family:var(--ff-display);font-size:56px;color:var(--gold);opacity:0.16;position:absolute;top:-14px;right:0;line-height:1}
-.step-icon{width:44px;height:44px;background:var(--ink);display:flex;align-items:center;justify-content:center;margin-bottom:20px;transition:transform .2s,background .2s}
-.step-icon:hover{background:#C4A35A;transform:scale(1.08)}
+.step-num{font-family:var(--ff-d);font-size:48px;color:var(--gold);opacity:.12;position:absolute;top:-12px;right:0;line-height:1}
+.step-icon{width:44px;height:44px;background:var(--ink);display:flex;align-items:center;justify-content:center;margin-bottom:18px;transition:transform .2s,background .2s}
+.step-icon:hover{background:var(--gold);transform:scale(1.08)}
 .step-icon svg{width:20px;height:20px;stroke:var(--cream);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
-.step h3{font-family:var(--ff-display);font-size:19px;color:var(--ink);margin-bottom:8px}
+.step h3{font-family:var(--ff-d);font-size:18px;color:var(--ink);margin-bottom:6px}
 .step p{font-size:13px;color:var(--muted);line-height:1.72}
+.step-time{display:inline-block;font-size:9px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;background:rgba(196,163,90,.09);border:.5px solid rgba(196,163,90,.25);color:var(--warn);margin-top:10px}
 
-/* ── FEATURES ── */
-.features-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:rgba(226,221,215,0.6)}
-.feature{
-  background:rgba(255,255,255,0.7);padding:28px 30px;
-  cursor:none;transition:background .2s,transform .2s;
-  position:relative;overflow:hidden;
-}
-.feature::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,var(--gold),transparent);
-  transform:scaleX(0);transform-origin:left;transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);
-}
+/* FEATURES */
+.features-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:rgba(226,221,215,.6)}
+.feature{background:rgba(255,255,255,.7);padding:26px 28px;cursor:none;transition:background .2s,transform .2s;position:relative;overflow:hidden}
+.feature::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.16,1,.3,1)}
 .feature:hover{background:#fff;transform:translateY(-2px)}
 .feature:hover::before{transform:scaleX(1)}
-.feature-icon{font-size:22px;margin-bottom:14px;display:block;transition:transform .3s}
-.feature:hover .feature-icon{transform:scale(1.15) rotate(-5deg)}
-.feature h3{font-size:15px;font-weight:500;color:var(--ink);margin-bottom:6px}
+.feature-icon{width:36px;height:36px;background:var(--ink);display:flex;align-items:center;justify-content:center;margin-bottom:14px;transition:transform .3s,background .3s}
+.feature:hover .feature-icon{transform:scale(1.1) rotate(-5deg);background:var(--gold)}
+.feature-icon svg{width:17px;height:17px;stroke:var(--cream);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.feature h3{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:5px}
 .feature p{font-size:13px;color:var(--muted);line-height:1.72}
 
-/* ── MOCKUP ── */
-.mockup{
-  background:rgba(255,255,255,0.88);backdrop-filter:blur(16px);
-  border:0.5px solid rgba(196,163,90,0.22);
-  box-shadow:0 2px 0 rgba(255,255,255,0.95),0 32px 80px rgba(0,0,0,0.1),0 8px 24px rgba(0,0,0,0.04);
-  padding:36px;position:relative;overflow:hidden;
-  transition:transform .4s cubic-bezier(0.16,1,0.3,1),box-shadow .4s;
-}
-.mockup:hover{transform:translateY(-4px);box-shadow:0 2px 0 rgba(255,255,255,0.95),0 48px 100px rgba(0,0,0,0.14)}
-.mockup::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold) 0%,var(--ink) 50%,var(--gold) 100%)}
-.mockup-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:26px}
-.mockup-label{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
-.mockup-client{font-family:var(--ff-display);font-size:23px;color:var(--ink)}
-.mockup-date{font-size:11px;color:var(--muted);margin-top:3px}
-.mockup-score{width:58px;height:58px;border:1.5px solid var(--ok);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
-.mockup-score-n{font-family:var(--ff-display);font-size:24px;color:var(--ok);line-height:1}
-.mockup-score-l{font-size:8px;color:var(--ok);letter-spacing:0.06em}
-.mockup-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px}
-.kpi{background:rgba(247,244,239,0.8);padding:13px;transition:background .2s}
+/* MOCKUP */
+.mockup{background:rgba(255,255,255,.88);backdrop-filter:blur(16px);border:.5px solid rgba(196,163,90,.22);box-shadow:var(--sh-xl);overflow:hidden;position:relative;transition:transform .4s cubic-bezier(.16,1,.3,1),box-shadow .4s}
+.mockup:hover{transform:translateY(-4px);box-shadow:0 2px 0 rgba(255,255,255,.95),0 48px 100px rgba(0,0,0,.14)}
+.mockup::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--ink) 50%,var(--gold));z-index:1}
+.m-chrome{background:#EFECE7;padding:10px 14px;display:flex;align-items:center;gap:8px;border-bottom:.5px solid var(--border)}
+.m-dots{display:flex;gap:5px}
+.m-dot{width:9px;height:9px;border-radius:50%}
+.m-dot:nth-child(1){background:#FF5F57}.m-dot:nth-child(2){background:#FEBC2E}.m-dot:nth-child(3){background:#28C840}
+.m-url{flex:1;background:rgba(255,255,255,.65);border:.5px solid var(--border);border-radius:3px;padding:4px 10px;font-size:10px;color:var(--muted)}
+.m-body{padding:32px}
+.m-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px}
+.m-label{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.m-client{font-family:var(--ff-d);font-size:22px;color:var(--ink)}
+.m-date{font-size:11px;color:var(--muted);margin-top:3px}
+.m-score{width:56px;height:56px;border:1.5px solid var(--ok);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.m-score-n{font-family:var(--ff-d);font-size:22px;color:var(--ok);line-height:1}
+.m-score-l{font-size:7px;color:var(--ok);letter-spacing:.05em}
+.m-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
+.kpi{background:rgba(247,244,239,.8);padding:12px;transition:background .2s}
 .kpi:hover{background:#fff}
-.kpi-l{font-size:9px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px}
-.kpi-v{font-family:var(--ff-display);font-size:22px;color:var(--ink)}
-.mockup-analysis{font-size:12px;color:var(--muted);line-height:1.78;padding:14px 16px;border-left:2px solid var(--ink);background:rgba(247,244,239,0.6);margin-bottom:18px}
-.mockup-recs{display:flex;flex-direction:column;gap:10px}
-.rec{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--ink);transition:transform .2s}
-.rec:hover{transform:translateX(4px)}
-.rec-n{width:20px;height:20px;background:var(--ink);color:var(--cream);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
-.mockup-watermark{position:absolute;bottom:16px;right:16px;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);opacity:0.3}
+.kpi-l{font-size:8px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px}
+.kpi-v{font-family:var(--ff-d);font-size:20px;color:var(--ink)}
+.kpi-d{font-size:9px;margin-top:2px}
+.kpi-d.ok{color:var(--ok)}.kpi-d.err{color:var(--err)}
 
-/* ── PRICING ── */
-.plans{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;background:rgba(226,221,215,0.5);margin-bottom:20px}
-.plan{background:rgba(255,255,255,0.78);padding:32px 26px;transition:background .2s,transform .2s;cursor:none}
+/* Inline charts in mockup */
+.m-charts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+.m-chart-title{font-size:8px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.m-bars{display:flex;align-items:flex-end;gap:3px;height:48px}
+.m-bar{flex:1;background:var(--border-l);position:relative;transition:background .2s;min-width:6px}
+.m-bar:hover{background:var(--gold)}
+.m-bar-inner{position:absolute;bottom:0;left:0;right:0;background:var(--ink)}
+
+.m-analysis{font-size:11px;color:var(--muted);line-height:1.78;padding:13px 15px;border-left:2px solid var(--ink);background:rgba(247,244,239,.6);margin-bottom:16px}
+.m-recs{display:flex;flex-direction:column;gap:8px}
+.rec{display:flex;align-items:flex-start;gap:10px;font-size:11px;color:var(--ink);transition:transform .2s,background .2s;padding:8px;background:rgba(247,244,239,.4)}
+.rec:hover{transform:translateX(4px);background:rgba(247,244,239,.9)}
+.rec-n{width:18px;height:18px;background:var(--ink);color:var(--cream);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;flex-shrink:0;margin-top:1px}
+.m-footer{display:flex;align-items:center;justify-content:space-between;padding-top:14px;margin-top:12px;border-top:.5px solid var(--border-l)}
+.m-watermark{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);opacity:.35}
+.m-actions{display:flex;gap:7px}
+.m-btn{font-size:10px;padding:6px 12px;font-weight:500;cursor:none;transition:all .2s;font-family:var(--ff-b)}
+.m-btn.p{background:var(--ink);color:var(--cream);border:none}.m-btn.p:hover{background:#333}
+.m-btn.s{border:.5px solid var(--border);color:var(--muted);background:none}.m-btn.s:hover{border-color:var(--ink);color:var(--ink)}
+
+/* ROI CALCULATOR */
+.roi{background:rgba(10,10,10,.97);padding:72px 0;position:relative;z-index:1;overflow:hidden}
+.roi::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.roi::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(196,163,90,.3),transparent)}
+.roi-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+.roi-title{font-family:var(--ff-d);font-size:clamp(1.8rem,3.5vw,2.6rem);color:var(--cream);line-height:1.08;margin-bottom:10px;letter-spacing:-.02em}
+.roi-sub{font-size:14px;color:rgba(245,242,237,.4);line-height:1.75;margin-bottom:36px}
+.roi-input-group{margin-bottom:26px}
+.roi-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(245,242,237,.4);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.roi-label strong{font-family:var(--ff-d);font-size:20px;color:var(--gold);text-transform:none;letter-spacing:-.01em;font-weight:400}
+.roi-slider{width:100%;-webkit-appearance:none;height:2px;background:rgba(255,255,255,.12);outline:none;cursor:none;border-radius:0}
+.roi-slider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--gold);border-radius:50%;cursor:none;box-shadow:0 0 0 3px rgba(196,163,90,.2)}
+.roi-slider::-moz-range-thumb{width:16px;height:16px;background:var(--gold);border-radius:50%;cursor:pointer;border:none}
+.roi-select{width:100%;padding:11px 14px;background:rgba(255,255,255,.06);border:.5px solid rgba(255,255,255,.12);color:var(--cream);font-family:var(--ff-b);font-size:13px;cursor:pointer;outline:none;-webkit-appearance:none;margin-top:8px}
+.roi-select option{background:#111;color:var(--cream)}
+
+.roi-result{background:rgba(196,163,90,.07);border:.5px solid rgba(196,163,90,.18);padding:36px;position:relative;overflow:hidden}
+.roi-result::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent)}
+.roi-eyebrow{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:rgba(196,163,90,.6);margin-bottom:8px}
+.roi-big{font-family:var(--ff-d);font-size:clamp(3rem,6vw,5rem);color:var(--gold);line-height:1;margin-bottom:4px;letter-spacing:-.03em}
+.roi-big-label{font-size:13px;color:rgba(245,242,237,.4);margin-bottom:28px}
+.roi-stats{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:rgba(255,255,255,.05);margin-bottom:28px}
+.roi-stat{background:rgba(10,10,10,.4);padding:16px}
+.roi-stat-n{font-family:var(--ff-d);font-size:26px;color:var(--cream);line-height:1;margin-bottom:3px}
+.roi-stat-l{font-size:10px;color:rgba(245,242,237,.3);letter-spacing:.03em}
+.roi-disclaimer{font-size:11px;color:rgba(196,163,90,.55);line-height:1.6;padding-top:18px;border-top:.5px solid rgba(255,255,255,.07)}
+.roi-disclaimer strong{color:var(--gold)}
+
+/* COMPARISON TABLE */
+.comparison-scroll{overflow-x:auto}
+.comparison{width:100%;border-collapse:collapse}
+.comparison th{padding:12px 16px;text-align:left;font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:rgba(255,255,255,.5);border-bottom:.5px solid var(--border)}
+.comparison th.hl{background:var(--ink);color:var(--gold)}
+.comparison td{padding:13px 16px;font-size:13px;border-bottom:.5px solid var(--border-l)}
+.comparison td.hl{background:rgba(10,10,10,.03);font-weight:500}
+.comparison td.ok{color:var(--ok)}
+.comparison td.no{color:var(--muted);opacity:.5}
+.comparison td.part{color:var(--warn)}
+.comparison tr:last-child td{border-bottom:none}
+.comparison tr:hover td{background:rgba(247,244,239,.8)}
+.comparison tr:hover td.hl{background:rgba(10,10,10,.05)}
+.comparison .row-label{font-size:13px;color:var(--ink);font-weight:400}
+
+/* PRICING */
+.pricing-toggle{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:40px}
+.toggle-opt{font-size:13px;color:var(--muted);cursor:none;transition:color .2s}
+.toggle-opt.on{color:var(--ink);font-weight:500}
+.toggle-track{width:44px;height:24px;background:var(--ink);border-radius:12px;position:relative;cursor:none;transition:background .3s;flex-shrink:0}
+.toggle-track::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;background:var(--cream);border-radius:50%;transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.toggle-track.on::after{transform:translateX(20px)}
+.save-badge{font-size:10px;font-weight:500;padding:2px 8px;background:rgba(45,106,79,.1);border:.5px solid rgba(45,106,79,.22);color:var(--ok);display:none}
+.show-annual .save-badge{display:inline-block}
+
+.plans{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;background:rgba(226,221,215,.5);margin-bottom:16px}
+.plan{background:rgba(255,255,255,.78);padding:30px 24px;transition:background .2s,transform .2s;cursor:none;position:relative}
 .plan:hover{background:#fff;transform:translateY(-3px)}
 .plan.pop{background:var(--ink);color:var(--cream)}
 .plan.pop:hover{background:#111}
-.plan-badge{font-size:9px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.plan-badge{font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
 .plan.pop .plan-badge{color:var(--gold)}
-.plan-name{font-family:var(--ff-display);font-size:24px;color:var(--ink);margin-bottom:6px}
+.plan-name{font-family:var(--ff-d);font-size:22px;color:var(--ink);margin-bottom:5px}
 .plan.pop .plan-name{color:var(--cream)}
-.plan-price{font-family:var(--ff-display);font-size:46px;color:var(--ink);line-height:1;margin-bottom:2px}
+
+/* Price display — monthly */
+.price-monthly{display:flex;align-items:baseline;gap:2px}
+.price-annual{display:none;align-items:baseline;gap:2px}
+.show-annual .price-monthly{display:none}
+.show-annual .price-annual{display:flex}
+.plan-price{font-family:var(--ff-d);font-size:40px;color:var(--ink);line-height:1;letter-spacing:-.03em}
 .plan.pop .plan-price{color:var(--cream)}
-.plan-period{font-size:12px;color:var(--muted);margin-bottom:24px}
-.plan.pop .plan-period{color:rgba(245,242,237,0.45)}
-.plan-divider{height:0.5px;background:var(--border);margin-bottom:22px}
-.plan.pop .plan-divider{background:rgba(255,255,255,0.1)}
-.plan-limit{display:inline-block;font-size:11px;font-weight:500;padding:4px 10px;margin-bottom:18px;background:rgba(196,163,90,0.09);border:0.5px solid rgba(196,163,90,0.24);color:var(--warn)}
-.plan.pop .plan-limit{background:rgba(196,163,90,0.15);border-color:rgba(196,163,90,0.3);color:var(--gold)}
-.plan-features{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
-.plan-features li{display:flex;align-items:flex-start;gap:9px;font-size:13px;color:var(--muted);line-height:1.5}
-.plan.pop .plan-features li{color:rgba(245,242,237,0.7)}
+.plan-cur{font-family:var(--ff-d);font-size:20px;color:var(--ink);align-self:flex-start;margin-top:6px}
+.plan.pop .plan-cur{color:var(--cream)}
+
+.plan-period{font-size:11px;color:var(--muted);margin-bottom:4px}
+.plan.pop .plan-period{color:rgba(245,242,237,.4)}
+.plan-save-line{font-size:10px;color:var(--ok);margin-bottom:16px;min-height:16px;display:none}
+.show-annual .plan-save-line{display:block}
+.plan.pop .plan-save-line{color:rgba(196,163,90,.8)}
+.plan-divider{height:.5px;background:var(--border);margin-bottom:18px}
+.plan.pop .plan-divider{background:rgba(255,255,255,.1)}
+.plan-limit{display:inline-block;font-size:10px;font-weight:500;padding:3px 9px;margin-bottom:14px;background:rgba(196,163,90,.09);border:.5px solid rgba(196,163,90,.24);color:var(--warn)}
+.plan.pop .plan-limit{background:rgba(196,163,90,.15);border-color:rgba(196,163,90,.3);color:var(--gold)}
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:24px}
+.plan-features li{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--muted);line-height:1.5}
+.plan.pop .plan-features li{color:rgba(245,242,237,.65)}
 .plan-features li::before{content:'✓';font-size:10px;color:var(--ok);font-weight:600;margin-top:2px;flex-shrink:0}
 .plan.pop .plan-features li::before{color:var(--gold)}
-.plan-features li.inherited{opacity:0.55}
-.plan-cta{display:block;width:100%;padding:13px;text-align:center;font-size:13px;font-weight:500;cursor:none;text-decoration:none;border:0.5px solid var(--border);color:var(--ink);background:transparent;transition:all .2s;position:relative;overflow:hidden}
-.plan-cta::before{content:'';position:absolute;inset:0;background:var(--ink);transform:scaleX(0);transform-origin:left;transition:transform 0.3s cubic-bezier(0.16,1,0.3,1);z-index:0}
-.plan-cta span{position:relative;z-index:1;transition:color 0.3s}
+.plan-features li.dim{opacity:.5}
+
+/* ============================================================
+   STRIPE PAYMENT LINKS — INSTRUCCIONES
+   ============================================================
+   Crea tus Payment Links en: https://dashboard.stripe.com/payment-links
+   Luego reemplaza los href de los botones con:
+
+   Plan Básico mensual:        https://buy.stripe.com/TU_LINK_BASICO_MENSUAL
+   Plan Básico anual:          https://buy.stripe.com/TU_LINK_BASICO_ANUAL
+   Plan Crecimiento mensual:   https://buy.stripe.com/TU_LINK_CRECIMIENTO_MENSUAL
+   Plan Crecimiento anual:     https://buy.stripe.com/TU_LINK_CRECIMIENTO_ANUAL
+   Plan Pro mensual:           https://buy.stripe.com/TU_LINK_PRO_MENSUAL
+   Plan Pro anual:             https://buy.stripe.com/TU_LINK_PRO_ANUAL
+
+   Para el toggle anual, añade data-monthly="URL_MENSUAL" data-annual="URL_ANUAL"
+   a cada .plan-cta y el script JS lo manejará automáticamente.
+   ============================================================ -->
+.plan-cta{display:block;width:100%;padding:12px;text-align:center;font-size:13px;font-weight:500;cursor:none;text-decoration:none;border:.5px solid var(--border);color:var(--ink);background:transparent;transition:all .2s;position:relative;overflow:hidden}
+.plan-cta::before{content:'';position:absolute;inset:0;background:var(--ink);transform:scaleX(0);transform-origin:left;transition:transform .3s cubic-bezier(.16,1,.3,1);z-index:0}
+.plan-cta span{position:relative;z-index:1;transition:color .3s}
 .plan-cta:hover::before{transform:scaleX(1)}
 .plan-cta:hover span{color:var(--cream)}
 .plan.pop .plan-cta{background:var(--cream);color:var(--ink);border-color:var(--cream)}
 .plan.pop .plan-cta::before{background:var(--gold)}
 .plan.pop .plan-cta:hover span{color:var(--ink)}
 .pricing-note{text-align:center;font-size:13px;color:var(--muted)}
-.pricing-note a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.pricing-note a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:none}
 
-/* ── FAQ ── */
+/* GUARANTEE */
+.guarantee{display:flex;align-items:center;justify-content:center;gap:32px;padding:28px 36px;background:rgba(255,255,255,.65);border:.5px solid rgba(45,106,79,.2);margin-top:24px;flex-wrap:wrap;backdrop-filter:blur(8px)}
+.guarantee-icon{width:54px;height:54px;border:1.5px solid var(--ok);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.guarantee-icon svg{width:26px;height:26px;stroke:var(--ok);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.guarantee-title{font-family:var(--ff-d);font-size:17px;color:var(--ink);margin-bottom:3px}
+.guarantee-desc{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* FAQ */
 .faq-list{display:flex;flex-direction:column}
-.faq-item{border-top:0.5px solid var(--border);padding:20px 0}
-.faq-item:last-child{border-bottom:0.5px solid var(--border)}
-.faq-q{font-size:15px;font-weight:500;color:var(--ink);cursor:none;display:flex;justify-content:space-between;align-items:center;user-select:none;transition:color .2s}
+.faq-item{border-top:.5px solid var(--border);padding:18px 0}
+.faq-item:last-child{border-bottom:.5px solid var(--border)}
+.faq-q{font-size:14px;font-weight:500;color:var(--ink);cursor:none;display:flex;justify-content:space-between;align-items:center;user-select:none;transition:color .2s}
 .faq-q:hover{color:#555}
-.faq-icon{font-size:20px;color:var(--muted);transition:transform .3s cubic-bezier(0.34,1.56,0.64,1);margin-left:16px;flex-shrink:0}
+.faq-icon{font-size:20px;color:var(--muted);transition:transform .3s cubic-bezier(.34,1.56,.64,1);margin-left:16px;flex-shrink:0}
 .faq-item.open .faq-icon{transform:rotate(45deg)}
-.faq-a{font-size:14px;color:var(--muted);line-height:1.78;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s ease}
-.faq-item.open .faq-a{max-height:300px;padding-top:14px}
+.faq-a{font-size:13px;color:var(--muted);line-height:1.78;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s ease}
+.faq-item.open .faq-a{max-height:300px;padding-top:12px}
 
-/* ── FINAL CTA ── */
-.final{padding:130px 0;text-align:center;background:var(--ink);position:relative;overflow:hidden}
-.final-mesh{position:absolute;inset:0;opacity:0.06}
-.final h2{font-family:var(--ff-display);font-size:clamp(2.5rem,6vw,5rem);color:var(--cream);line-height:1.04;margin-bottom:20px;position:relative;z-index:1}
-.final-sub{font-size:16px;color:rgba(245,242,237,0.45);margin-bottom:44px;position:relative;z-index:1}
-.btn-gold{display:inline-flex;align-items:center;gap:8px;padding:17px 38px;font-size:15px;font-weight:500;background:var(--gold);color:var(--ink);border:none;cursor:none;text-decoration:none;position:relative;z-index:1;transition:all .2s}
-.btn-gold:hover{background:#D4B36A;transform:translateY(-3px);box-shadow:0 16px 36px rgba(196,163,90,0.35)}
-.final-note{font-size:12px;color:rgba(245,242,237,0.22);margin-top:18px;position:relative;z-index:1}
-
-/* ── FOOTER ── */
-footer{background:var(--ink);border-top:0.5px solid rgba(255,255,255,0.06);padding:36px 0}
-.footer-inner{max-width:1060px;margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
-.footer-logo{display:flex;align-items:center;gap:10px}
-.footer-logo-text{font-family:var(--ff-display);font-size:14px;color:rgba(245,242,237,0.45)}
-.footer-links{display:flex;gap:24px;flex-wrap:wrap}
-.footer-links a{font-size:12px;color:rgba(245,242,237,0.25);text-decoration:none;transition:color .2s;cursor:none}
-.footer-links a:hover{color:rgba(245,242,237,0.7)}
-
-/* ── TICKER ── */
-.ticker-wrap{overflow:hidden;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);background:rgba(255,255,255,0.35);backdrop-filter:blur(4px);padding:14px 0;position:relative;z-index:1}
+/* TICKER */
+.ticker-wrap{overflow:hidden;border-top:.5px solid var(--border);border-bottom:.5px solid var(--border);background:rgba(255,255,255,.35);backdrop-filter:blur(4px);padding:13px 0;position:relative;z-index:1}
 .ticker{display:flex;gap:0;white-space:nowrap;animation:ticker 28s linear infinite}
 .ticker:hover{animation-play-state:paused}
-.ticker-item{display:inline-flex;align-items:center;gap:12px;padding:0 32px;font-size:12px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase}
+.ticker-item{display:inline-flex;align-items:center;gap:12px;padding:0 28px;font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
 .ticker-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);flex-shrink:0}
 @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
+/* FINAL CTA */
+.final{padding:120px 0;text-align:center;background:var(--ink);position:relative;overflow:hidden}
+.final-mesh{position:absolute;inset:0;opacity:.06}
+.final h2{font-family:var(--ff-d);font-size:clamp(2.4rem,5.5vw,4.6rem);color:var(--cream);line-height:1.04;margin-bottom:18px;position:relative;z-index:1;letter-spacing:-.02em}
+.final-sub{font-size:16px;color:rgba(245,242,237,.45);margin-bottom:40px;position:relative;z-index:1}
+.btn-gold{display:inline-flex;align-items:center;gap:8px;padding:16px 36px;font-size:15px;font-weight:500;background:var(--gold);color:var(--ink);border:none;cursor:none;text-decoration:none;position:relative;z-index:1;transition:all .2s}
+.btn-gold:hover{background:var(--gold-l);transform:translateY(-3px);box-shadow:0 16px 36px rgba(196,163,90,.35)}
+.final-note{font-size:12px;color:rgba(245,242,237,.2);margin-top:16px;position:relative;z-index:1;letter-spacing:.04em}
+.final-trust{display:flex;align-items:center;justify-content:center;gap:24px;margin-top:44px;position:relative;z-index:1;flex-wrap:wrap}
+.final-trust-item{display:flex;align-items:center;gap:7px;font-size:12px;color:rgba(245,242,237,.3)}
+.final-trust-item svg{width:13px;height:13px;stroke:rgba(245,242,237,.3);fill:none;stroke-width:1.5;stroke-linecap:round}
+.final-div{width:1px;height:14px;background:rgba(255,255,255,.1)}
+
+/* FOOTER */
+footer{background:var(--ink);border-top:.5px solid rgba(255,255,255,.06);padding:32px 0}
+.footer-inner{max-width:1060px;margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.footer-logo{display:flex;align-items:center;gap:10px}
+.footer-logo-text{font-family:var(--ff-d);font-size:14px;color:rgba(245,242,237,.38)}
+.footer-links{display:flex;gap:22px;flex-wrap:wrap}
+.footer-links a{font-size:12px;color:rgba(245,242,237,.22);text-decoration:none;transition:color .2s;cursor:none}
+.footer-links a:hover{color:rgba(245,242,237,.65)}
+.footer-copy{font-size:11px;color:rgba(245,242,237,.15)}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .hero-inner{grid-template-columns:1fr}
+  .hero-card-wrap{display:none}
+  .roi-grid{grid-template-columns:1fr;gap:40px}
+  .roi{padding:60px 0}
+}
 @media(max-width:640px){
   .quotes-grid,.features-grid,.plans,.steps{grid-template-columns:1fr}
   .steps::before{display:none}
-  .mockup-kpis{grid-template-columns:1fr 1fr}
-  .proof-strip{gap:24px;flex-wrap:wrap}
+  .m-kpis{grid-template-columns:1fr 1fr}
+  .m-charts{grid-template-columns:1fr}
+  .proof-strip{gap:20px;flex-wrap:wrap}
   .proof-div{display:none}
   .nav-links{display:none}
+  .hero-social-proof{display:none}
   body{cursor:auto}
   #cursor,#cursor-ring{display:none}
 }
@@ -371,11 +458,8 @@ footer{background:var(--ink);border-top:0.5px solid rgba(255,255,255,0.06);paddi
 </head>
 <body>
 
-<!-- CURSOR -->
 <div id="cursor"></div>
 <div id="cursor-ring"></div>
-
-<!-- MESH BACKGROUND CANVAS -->
 <div class="mesh-bg"><canvas id="meshCanvas"></canvas></div>
 
 <!-- NAV -->
@@ -383,71 +467,176 @@ footer{background:var(--ink);border-top:0.5px solid rgba(255,255,255,0.06);paddi
   <div class="nav-inner">
     <a href="/" class="logo">
       <svg class="logo-symbol" width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <!-- Arc -->
         <path class="logo-arc" d="M6 26 C6 26 8 8 26 6" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" fill="none"/>
-        <!-- Main dot -->
         <circle cx="6" cy="26" r="3.5" fill="#0A0A0A"/>
-        <!-- Gold dot -->
         <circle class="logo-dot-gold" cx="26" cy="6" r="2.5" fill="#C4A35A"/>
-        <!-- Mid ring -->
         <circle cx="16" cy="16" r="1.8" stroke="#0A0A0A" stroke-width="1.2" fill="none" opacity="0.3"/>
       </svg>
       <span class="logo-text">Reportly</span>
     </a>
     <div class="nav-links">
       <a href="#como-funciona">Cómo funciona</a>
+      <a href="#roi">Calculadora ROI</a>
       <a href="#precios">Precios</a>
       <a href="mailto:hola@reportly.es">Contacto</a>
     </div>
-    <a href="https://app.reportly.es" class="nav-cta">
-      Probar gratis
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </a>
+    <div class="nav-right">
+      <a href="https://app.reportly.es/login" class="nav-login">Acceder</a>
+      <a href="https://app.reportly.es" class="nav-cta">
+        Probar gratis
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
   </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="container">
-    <div class="hero-badge">✦ &nbsp;Exclusivo para agencias de marketing digital en España</div>
-
-    <h1 class="hero-h1">
-      <span class="word" style="transition-delay:0.5s">Deja</span>
-      <span class="word" style="transition-delay:0.6s">&nbsp;de</span>
-      <span class="word" style="transition-delay:0.7s">&nbsp;perder</span>
-      <br>
-      <span class="italic-wrap">
-        <span class="word word-italic" style="transition-delay:0.8s">40&nbsp;horas</span>
-        <span class="word word-italic" style="transition-delay:0.9s">&nbsp;al&nbsp;mes</span>
-      </span>
-      <br>
-      <span class="word" style="transition-delay:1.0s">en</span>
-      <span class="word" style="transition-delay:1.1s">&nbsp;reportes</span>
-      <span class="word" style="transition-delay:1.2s">&nbsp;manuales.</span>
-    </h1>
-
-    <p class="hero-sub">
-      Reportly genera informes profesionales de Meta Ads con el logo de tu agencia
-      en 30 segundos. PDF descargable o enlace compartible directamente con tu cliente.
-    </p>
-    <div class="cta-group">
-      <a href="https://app.reportly.es" class="btn-primary">
-        Generar informe de demostración
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-      <a href="#como-funciona" class="btn-ghost">Ver cómo funciona</a>
+  <div class="hero-inner">
+    <!-- Left -->
+    <div class="hero-left">
+      <div class="hero-badge">✦ &nbsp;Exclusivo para agencias de marketing digital en España</div>
+      <h1 class="hero-h1">
+        <span class="word" style="transition-delay:.5s">Deja</span>
+        <span class="word" style="transition-delay:.6s">&nbsp;de</span>
+        <span class="word" style="transition-delay:.7s">&nbsp;perder</span><br>
+        <span class="italic-wrap">
+          <span class="word word-italic" style="transition-delay:.8s">40&nbsp;horas</span>
+          <span class="word word-italic" style="transition-delay:.9s">&nbsp;al&nbsp;mes</span>
+        </span><br>
+        <span class="word" style="transition-delay:1s">en&nbsp;</span><span class="word" style="transition-delay:1.1s">reportes</span><span class="word" style="transition-delay:1.2s">&nbsp;manuales.</span>
+      </h1>
+      <p class="hero-sub">Reportly genera informes profesionales de Meta Ads con el logo de tu agencia en 30 segundos. PDF descargable o enlace compartible directamente con tu cliente.</p>
+      <div class="cta-group">
+        <a href="https://app.reportly.es" class="btn-primary">
+          Generar informe de demostración
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#como-funciona" class="btn-ghost">Ver cómo funciona</a>
+      </div>
+      <div class="hero-social-proof">
+        <div class="proof-avatars">
+          <div class="proof-av a">MA</div>
+          <div class="proof-av b">LP</div>
+          <div class="proof-av c">RG</div>
+          <div class="proof-av d">CS</div>
+        </div>
+        <div class="proof-words">
+          <span class="proof-stars">★★★★★</span>
+          <strong>+40 agencias</strong> ya ahorran horas cada mes
+        </div>
+      </div>
+      <div class="proof-strip">
+        <div class="proof-item"><span class="proof-num" data-target="40">0</span><span class="proof-label">horas/mes ahorradas por agencia</span></div>
+        <div class="proof-div"></div>
+        <div class="proof-item"><span class="proof-num">30s</span><span class="proof-label">por informe generado</span></div>
+        <div class="proof-div"></div>
+        <div class="proof-item"><span class="proof-num">0€</span><span class="proof-label">para probarlo ahora</span></div>
+      </div>
     </div>
-    <div class="proof-strip">
-      <div class="proof-item"><span class="proof-num">6–10h</span><span class="proof-label">ahorradas por cliente/mes</span></div>
-      <div class="proof-div"></div>
-      <div class="proof-item"><span class="proof-num">30s</span><span class="proof-label">por informe generado</span></div>
-      <div class="proof-div"></div>
-      <div class="proof-item"><span class="proof-num">100%</span><span class="proof-label">calibrado al sector</span></div>
-      <div class="proof-div"></div>
-      <div class="proof-item"><span class="proof-num">0€</span><span class="proof-label">para probarlo ahora</span></div>
+
+    <!-- Right — hero card -->
+    <div class="hero-card-wrap">
+      <div class="hero-card">
+        <div class="hc-chrome">
+          <div class="hc-dots"><div class="hc-dot"></div><div class="hc-dot"></div><div class="hc-dot"></div></div>
+          <div class="hc-url">app.reportly.es/informe/moda-primavera-sl</div>
+        </div>
+        <div class="hc-body">
+          <div class="hc-header">
+            <div>
+              <div class="hc-clabel">Informe Meta Ads · Mayo 2026</div>
+              <div class="hc-cname">Moda Primavera SL</div>
+              <div class="hc-date">Preparado por Marketing Pro Agency</div>
+            </div>
+            <div class="hc-score">
+              <span class="hc-score-n">74</span>
+              <span class="hc-score-l">/ 100</span>
+            </div>
+          </div>
+          <div class="hc-kpis">
+            <div class="hc-kpi"><div class="hc-kl">Inversión</div><div class="hc-kv">2.840€</div><div class="hc-kd ok">↑ 12%</div></div>
+            <div class="hc-kpi"><div class="hc-kl">ROAS</div><div class="hc-kv" style="color:#2D6A4F">4.2x</div><div class="hc-kd ok">↑ Sector</div></div>
+            <div class="hc-kpi"><div class="hc-kl">CTR</div><div class="hc-kv">2.1%</div><div class="hc-kd ok">↑ Obj.</div></div>
+            <div class="hc-kpi"><div class="hc-kl">Conv.</div><div class="hc-kv">87</div><div class="hc-kd err">↓ 3%</div></div>
+          </div>
+          <div class="hc-bars">
+            <div class="hc-bars-label">Rendimiento por campaña</div>
+            <div class="hc-bar-row">
+              <span class="hc-bar-name">Advantage+ Shopping</span>
+              <div class="hc-bar-track"><div class="hc-bar-fill" style="background:#0A0A0A;width:82%"></div></div>
+              <span class="hc-bar-val">5.1x</span>
+            </div>
+            <div class="hc-bar-row">
+              <span class="hc-bar-name">Retargeting Lookalike</span>
+              <div class="hc-bar-track"><div class="hc-bar-fill" style="background:#0A0A0A;width:61%;animation-delay:1.3s"></div></div>
+              <span class="hc-bar-val">3.8x</span>
+            </div>
+            <div class="hc-bar-row">
+              <span class="hc-bar-name">Prospecting Intereses</span>
+              <div class="hc-bar-track"><div class="hc-bar-fill" style="background:#C0392B;width:24%;animation-delay:1.5s"></div></div>
+              <span class="hc-bar-val">1.5x</span>
+            </div>
+          </div>
+          <div class="hc-insight">La cuenta muestra rendimiento sólido con ROAS 4.2x, por encima del benchmark del sector moda (3.5–7x). Advantage+ Shopping concentra el 60% del presupuesto con resultados óptimos.</div>
+          <div class="hc-recs">
+            <div class="hc-rec"><div class="hc-rec-n">1</div><span>Aumentar presupuesto en Advantage+ Shopping un 20% — ROAS 5.1x en zona de escala.</span></div>
+            <div class="hc-rec"><div class="hc-rec-n">2</div><span>Pausar Prospecting Intereses — CPM 18€ duplica benchmark. Redirigir a Lookalike.</span></div>
+          </div>
+          <div class="hc-footer">
+            <span class="hc-watermark">Generado por Reportly</span>
+            <div class="hc-actions">
+              <button class="hc-btn s">Compartir</button>
+              <button class="hc-btn p">↓ PDF</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-float">
+        <div class="live-dot"></div>
+        Generado en 28 segundos
+      </div>
     </div>
   </div>
 </section>
+
+<!-- LOGO STRIP -->
+<div class="logo-strip">
+  <div class="container-wide">
+    <p class="logo-strip-label">Genera informes para tus campañas en</p>
+    <div class="logo-strip-logos">
+      <!-- Meta -->
+      <div class="strip-logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#0A0A0A"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.5 7.5c.276 0 .5.224.5.5v4c0 .276-.224.5-.5.5s-.5-.224-.5-.5v-4c0-.276.224-.5.5-.5zM12 8c.276 0 .5.224.5.5v7c0 .276-.224.5-.5.5s-.5-.224-.5-.5v-7c0-.276.224-.5.5-.5zm-4.5 2c.276 0 .5.224.5.5v3c0 .276-.224.5-.5.5s-.5-.224-.5-.5v-3c0-.276.224-.5.5-.5z"/></svg>
+        <span class="strip-logo-name">Meta Ads</span>
+      </div>
+      <div class="strip-divider"></div>
+      <!-- Facebook -->
+      <div class="strip-logo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#0A0A0A"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+        <span class="strip-logo-name">Facebook</span>
+      </div>
+      <div class="strip-divider"></div>
+      <!-- Instagram -->
+      <div class="strip-logo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        <span class="strip-logo-name">Instagram</span>
+      </div>
+      <div class="strip-divider"></div>
+      <!-- WhatsApp -->
+      <div class="strip-logo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+        <span class="strip-logo-name">WhatsApp</span>
+      </div>
+      <div class="strip-divider"></div>
+      <!-- PDF -->
+      <div class="strip-logo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span class="strip-logo-name">PDF Branded</span>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- TICKER -->
 <div class="ticker-wrap">
@@ -459,7 +648,6 @@ footer{background:var(--ink);border-top:0.5px solid rgba(255,255,255,0.06);paddi
     <div class="ticker-item"><span class="ticker-dot"></span>Enlace para compartir con el cliente</div>
     <div class="ticker-item"><span class="ticker-dot"></span>Sin configuración técnica</div>
     <div class="ticker-item"><span class="ticker-dot"></span>Cancela cuando quieras</div>
-    <!-- Duplicate for seamless loop -->
     <div class="ticker-item"><span class="ticker-dot"></span>Ahorra 6-10 horas por cliente</div>
     <div class="ticker-item"><span class="ticker-dot"></span>PDF con tu logo en 30 segundos</div>
     <div class="ticker-item"><span class="ticker-dot"></span>Benchmarks reales del sector</div>
@@ -477,23 +665,39 @@ footer{background:var(--ink);border-top:0.5px solid rgba(255,255,255,0.06);paddi
     <h2 class="section-title reveal">¿Te suena<br>familiar?</h2>
     <div class="quotes-grid" style="margin-top:40px">
       <div class="quote-card reveal">
+        <div class="quote-stars">★★★★★</div>
         <p class="quote-text">"He visto agencias gastando 6-10 horas por cliente al mes solo en reportes. Es una locura la cantidad de tiempo que perdemos en algo que debería ser automático."</p>
-        <p class="quote-source">— r/agency &nbsp;·&nbsp; 847 votos</p>
+        <div class="quote-footer">
+          <div class="quote-av a">MR</div>
+          <span class="quote-source">r/agency &nbsp;·&nbsp; 847 votos</span>
+        </div>
       </div>
       <div class="quote-card reveal d1">
+        <div class="quote-stars">★★★★★</div>
         <p class="quote-text">"Estoy extrayendo datos manualmente de Google Ads, Meta y LinkedIn a Google Sheets, y me está llevando una eternidad. Tiene que haber una forma mejor."</p>
-        <p class="quote-source">— r/PPC &nbsp;·&nbsp; 612 votos</p>
+        <div class="quote-footer">
+          <div class="quote-av b">LP</div>
+          <span class="quote-source">r/PPC &nbsp;·&nbsp; 612 votos</span>
+        </div>
       </div>
       <div class="quote-card reveal d2">
+        <div class="quote-stars">★★★★★</div>
         <p class="quote-text">"Mandamos a clientes PDFs que parecen hechos en 2009. Necesitamos algo que tenga buena pinta sin pasar media jornada en ello."</p>
-        <p class="quote-source">— r/digitalmarketing &nbsp;·&nbsp; 534 votos</p>
+        <div class="quote-footer">
+          <div class="quote-av c">SC</div>
+          <span class="quote-source">r/digitalmarketing &nbsp;·&nbsp; 534 votos</span>
+        </div>
       </div>
       <div class="quote-card reveal d3">
+        <div class="quote-stars">★★★★★</div>
         <p class="quote-text">"Los reportes consumen demasiadas horas valiosas. Horas que podría dedicar a estrategia, a nuevos clientes, a hacer crecer la agencia."</p>
-        <p class="quote-source">— r/agency &nbsp;·&nbsp; 489 votos</p>
+        <div class="quote-footer">
+          <div class="quote-av d">AR</div>
+          <span class="quote-source">r/agency &nbsp;·&nbsp; 489 votos</span>
+        </div>
       </div>
     </div>
-    <div class="center-cta reveal" style="margin-top:52px">
+    <div class="center-cta reveal" style="margin-top:48px">
       <p class="center-sub">El reporting manual es el mayor destructor de tiempo en una agencia.<br>Reportly lo resuelve en 30 segundos.</p>
       <a href="https://app.reportly.es" class="btn-primary">Ver el informe que generaría para tu agencia →</a>
     </div>
@@ -511,19 +715,22 @@ footer{background:var(--ink);border-top:0.5px solid rgba(255,255,255,0.06);paddi
         <div class="step-num">01</div>
         <div class="step-icon"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
         <h3>Introduce los datos</h3>
-        <p>Nombre de la agencia, del cliente, sector, presupuesto y período. 30 segundos de setup.</p>
+        <p>Nombre de la agencia, cliente, sector, presupuesto y período. Setup completo en 30 segundos.</p>
+        <span class="step-time">30 seg</span>
       </div>
       <div class="step reveal d1">
         <div class="step-num">02</div>
         <div class="step-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg></div>
         <h3>La IA analiza</h3>
         <p>Genera métricas calibradas al sector y las analiza en lenguaje natural que tu cliente entiende.</p>
+        <span class="step-time">Automático</span>
       </div>
       <div class="step reveal d2">
         <div class="step-num">03</div>
         <div class="step-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
         <h3>Descarga o comparte</h3>
-        <p>PDF de 4 páginas con tu logo listo para enviar. O enlace al panel para que tu cliente lo vea en tiempo real.</p>
+        <p>PDF de 4 páginas con tu logo listo para enviar. O enlace al panel para que tu cliente lo vea online.</p>
+        <span class="step-time">Listo para enviar</span>
       </div>
     </div>
   </div>
@@ -536,12 +743,36 @@ footer{background:var(--ink);border-top:0.5px solid rgba(255,255,255,0.06);paddi
     <h2 class="section-title reveal">Todo lo que necesita<br>un informe profesional.</h2>
     <p class="section-sub reveal">Sin que tu equipo pierda una tarde en ello.</p>
     <div class="features-grid">
-      <div class="feature reveal"><span class="feature-icon">📊</span><h3>Análisis completo de campañas</h3><p>ROAS, CTR, CPC, CPM, conversiones — comparados con benchmarks reales del sector en España.</p></div>
-      <div class="feature reveal d1"><span class="feature-icon">🤖</span><h3>Análisis en lenguaje natural</h3><p>La IA explica qué funcionó, qué no, y por qué — en español que tu cliente entiende sin ser técnico.</p></div>
-      <div class="feature reveal d2"><span class="feature-icon">⚡</span><h3>3 recomendaciones accionables</h3><p>No métricas vacías. Acciones concretas para la semana siguiente con justificación clara.</p></div>
-      <div class="feature reveal d3"><span class="feature-icon">🎨</span><h3>PDF con el logo de tu agencia</h3><p>Portada negra con tu marca, 4 páginas estilo editorial. Parece hecho por una agencia de 50 personas.</p></div>
-      <div class="feature reveal"><span class="feature-icon">🔗</span><h3>Enlace compartible con el cliente</h3><p>Panel web que tu cliente puede abrir en el móvil. Sin instalar nada, sin registrarse.</p></div>
-      <div class="feature reveal d1"><span class="feature-icon">🎯</span><h3>Calibrado por sector</h3><p>E-commerce, clínicas, moda, inmobiliaria, restauración — benchmarks específicos para cada uno.</p></div>
+      <div class="feature reveal">
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <h3>Análisis completo de campañas</h3>
+        <p>ROAS, CTR, CPC, CPM, conversiones — comparados con benchmarks reales del sector en España.</p>
+      </div>
+      <div class="feature reveal d1">
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/><path d="M12 8v4l3 3"/></svg></div>
+        <h3>Análisis en lenguaje natural</h3>
+        <p>La IA explica qué funcionó, qué no y por qué — en español que tu cliente entiende sin ser técnico.</p>
+      </div>
+      <div class="feature reveal d2">
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+        <h3>3 recomendaciones accionables</h3>
+        <p>No métricas vacías. Acciones concretas para la semana siguiente con justificación clara.</p>
+      </div>
+      <div class="feature reveal d3">
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+        <h3>PDF con el logo de tu agencia</h3>
+        <p>Portada negra con tu marca, 4 páginas estilo editorial. Parece hecho por una agencia de 50 personas.</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></div>
+        <h3>Enlace compartible con el cliente</h3>
+        <p>Panel web que tu cliente puede abrir en el móvil. Sin instalar nada, sin registrarse.</p>
+      </div>
+      <div class="feature reveal d1">
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+        <h3>Calibrado por sector</h3>
+        <p>E-commerce, clínicas, moda, inmobiliaria, restauración — benchmarks específicos para cada uno.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -553,27 +784,60 @@ footer{background:var(--ink);border-top:0.5px solid rgba(255,255,255,0.06);paddi
     <h2 class="section-title reveal" style="text-align:center">Así es un informe de Reportly.</h2>
     <p class="section-sub reveal" style="text-align:center;max-width:100%;margin-bottom:40px">Generado en 30 segundos. Listo para enviar a tu cliente.</p>
     <div class="mockup reveal">
-      <div class="mockup-top">
-        <div>
-          <div class="mockup-label">Informe Meta Ads · Últimos 30 días</div>
-          <div class="mockup-client">Moda Primavera SL</div>
-          <div class="mockup-date">Preparado por Marketing Pro Agency · Mayo 2026</div>
+      <div class="m-chrome">
+        <div class="m-dots"><div class="m-dot"></div><div class="m-dot"></div><div class="m-dot"></div></div>
+        <div class="m-url">app.reportly.es/informe/moda-primavera-sl-mayo-2026</div>
+      </div>
+      <div class="m-body">
+        <div class="m-top">
+          <div>
+            <div class="m-label">Informe Meta Ads · Últimos 30 días</div>
+            <div class="m-client">Moda Primavera SL</div>
+            <div class="m-date">Preparado por Marketing Pro Agency · Mayo 2026</div>
+          </div>
+          <div class="m-score"><span class="m-score-n">74</span><span class="m-score-l">/ 100</span></div>
         </div>
-        <div class="mockup-score"><span class="mockup-score-n">74</span><span class="mockup-score-l">/ 100</span></div>
+        <div class="m-kpis">
+          <div class="kpi"><div class="kpi-l">Inversión</div><div class="kpi-v">2.840€</div><div class="kpi-d ok">↑ 12% vs mes ant.</div></div>
+          <div class="kpi"><div class="kpi-l">ROAS global</div><div class="kpi-v" style="color:#2D6A4F">4.2x</div><div class="kpi-d ok">↑ sobre benchmark</div></div>
+          <div class="kpi"><div class="kpi-l">CTR medio</div><div class="kpi-v">2.1%</div><div class="kpi-d ok">↑ sobre objetivo</div></div>
+          <div class="kpi"><div class="kpi-l">Conversiones</div><div class="kpi-v">87</div><div class="kpi-d err">↓ 3% vs mes ant.</div></div>
+        </div>
+        <div class="m-charts">
+          <div>
+            <div class="m-chart-title">ROAS por campaña</div>
+            <div class="m-bars">
+              <div class="m-bar" title="Advantage+"><div class="m-bar-inner" style="height:82%"></div></div>
+              <div class="m-bar" title="Retargeting"><div class="m-bar-inner" style="height:71%"></div></div>
+              <div class="m-bar" title="Lookalike"><div class="m-bar-inner" style="height:60%"></div></div>
+              <div class="m-bar" title="Intereses"><div class="m-bar-inner" style="height:29%;background:#C0392B"></div></div>
+              <div class="m-bar" title="Carrito"><div class="m-bar-inner" style="height:0%"></div></div>
+            </div>
+          </div>
+          <div>
+            <div class="m-chart-title">CTR semanal</div>
+            <div class="m-bars">
+              <div class="m-bar"><div class="m-bar-inner" style="height:55%"></div></div>
+              <div class="m-bar"><div class="m-bar-inner" style="height:68%"></div></div>
+              <div class="m-bar"><div class="m-bar-inner" style="height:60%"></div></div>
+              <div class="m-bar"><div class="m-bar-inner" style="height:75%"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="m-analysis">La cuenta muestra un rendimiento sólido con un ROAS de 4.2x, por encima del benchmark del sector moda (3.5–7x). La campaña Advantage+ Shopping concentra el 60% del presupuesto y genera el mayor volumen de conversiones. El CTR del 2.1% supera el objetivo del 1.8%.</div>
+        <div class="m-recs">
+          <div class="rec"><div class="rec-n">1</div><span>Aumentar presupuesto en Advantage+ Shopping un 20% — está en zona de escala óptima con ROAS 5.1x.</span></div>
+          <div class="rec"><div class="rec-n">2</div><span>Pausar campaña Prospecting Intereses — CPM de 18€ duplica el benchmark. Redirigir a Lookalike Compradores.</span></div>
+          <div class="rec"><div class="rec-n">3</div><span>Activar Retargeting Carritos Abandonados — actualmente pausada y supone dejar conversiones sobre la mesa.</span></div>
+        </div>
+        <div class="m-footer">
+          <span class="m-watermark">Generado por Reportly · reportly.es</span>
+          <div class="m-actions">
+            <button class="m-btn s">🔗 Copiar enlace</button>
+            <button class="m-btn p">↓ Descargar PDF</button>
+          </div>
+        </div>
       </div>
-      <div class="mockup-kpis">
-        <div class="kpi"><div class="kpi-l">Inversión</div><div class="kpi-v">2.840€</div></div>
-        <div class="kpi"><div class="kpi-l">ROAS global</div><div class="kpi-v" style="color:#2D6A4F">4.2x</div></div>
-        <div class="kpi"><div class="kpi-l">CTR medio</div><div class="kpi-v">2.1%</div></div>
-        <div class="kpi"><div class="kpi-l">Conversiones</div><div class="kpi-v">87</div></div>
-      </div>
-      <div class="mockup-analysis">La cuenta muestra un rendimiento sólido con un ROAS de 4.2x, por encima del benchmark del sector moda (3.5–7x). La campaña Advantage+ Shopping concentra el 60% del presupuesto y genera el mayor volumen de conversiones. El CTR del 2.1% supera el objetivo del 1.8%.</div>
-      <div class="mockup-recs">
-        <div class="rec"><div class="rec-n">1</div><span>Aumentar presupuesto en Advantage+ Shopping un 20% — está en zona de escala óptima con ROAS 5.1x.</span></div>
-        <div class="rec"><div class="rec-n">2</div><span>Pausar campaña Prospecting Intereses — CPM de 18€ duplica el benchmark. Redirigir a Lookalike Compradores.</span></div>
-        <div class="rec"><div class="rec-n">3</div><span>Activar Retargeting Carritos Abandonados — actualmente pausada y supone dejar conversiones sobre la mesa.</span></div>
-      </div>
-      <div class="mockup-watermark">Generado por Reportly · reportly.es</div>
     </div>
     <div style="text-align:center;margin-top:36px" class="reveal">
       <a href="https://app.reportly.es" class="btn-primary" style="display:inline-flex">
@@ -584,18 +848,160 @@ footer{background:var(--ink);border-top:0.5px solid rgba(255,255,255,0.06);paddi
   </div>
 </section>
 
+<!-- ROI CALCULATOR -->
+<section class="roi" id="roi">
+  <div class="container-wide">
+    <div class="roi-grid">
+      <div>
+        <span class="eyebrow" style="color:rgba(196,163,90,.6)">Calculadora de ahorro</span>
+        <h2 class="roi-title reveal">¿Cuánto dinero<br>pierdes cada mes<br>en reportes?</h2>
+        <p class="roi-sub reveal">Calcula el valor real de tu tiempo. Spoiler: Reportly se paga solo en la primera semana.</p>
+        <div class="roi-input-group reveal">
+          <div class="roi-label">Clientes activos <strong id="val-clients">12</strong></div>
+          <input type="range" class="roi-slider" id="roi-clients" min="1" max="50" value="12" oninput="calcRoi()">
+        </div>
+        <div class="roi-input-group reveal d1">
+          <div class="roi-label">Horas por informe <strong id="val-hours">4</strong>h</div>
+          <input type="range" class="roi-slider" id="roi-hours" min="1" max="12" value="4" oninput="calcRoi()">
+        </div>
+        <div class="roi-input-group reveal d2">
+          <div class="roi-label">Tu tarifa hora</div>
+          <select class="roi-select" id="roi-rate" onchange="calcRoi()">
+            <option value="25">25€/h — Junior</option>
+            <option value="40" selected>40€/h — Mid</option>
+            <option value="65">65€/h — Senior</option>
+            <option value="100">100€/h — Director</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <div class="roi-result reveal">
+          <div class="roi-eyebrow">Valor mensual del tiempo perdido</div>
+          <div class="roi-big" id="roi-main">1.920€</div>
+          <div class="roi-big-label">al mes en horas de reporting</div>
+          <div class="roi-stats">
+            <div class="roi-stat">
+              <div class="roi-stat-n" id="roi-hours-total">48h</div>
+              <div class="roi-stat-l">horas/mes en reportes</div>
+            </div>
+            <div class="roi-stat">
+              <div class="roi-stat-n" id="roi-annual">23.040€</div>
+              <div class="roi-stat-l">valor anual perdido</div>
+            </div>
+          </div>
+          <div class="roi-disclaimer">
+            Con el plan Básico de Reportly (297€/mes) recuperas ese tiempo. <strong>ROI de <span id="roi-mult">6.5x</span></strong> desde el primer mes.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON TABLE -->
+<section class="section">
+  <div class="container-wide">
+    <span class="eyebrow reveal" style="text-align:center;display:block">Por qué Reportly</span>
+    <h2 class="section-title reveal" style="text-align:center">No hay otra herramienta<br>que haga esto.</h2>
+    <p class="section-sub reveal" style="text-align:center;max-width:100%;margin-bottom:48px">Las alternativas te dan datos. Nosotros te damos el informe ya hecho.</p>
+    <div class="comparison-scroll reveal">
+      <table class="comparison">
+        <thead>
+          <tr>
+            <th style="min-width:200px">Funcionalidad</th>
+            <th class="hl" style="min-width:110px">Reportly</th>
+            <th style="min-width:110px">Looker Studio</th>
+            <th style="min-width:130px">AgencyAnalytics</th>
+            <th style="min-width:110px">Excel manual</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-label">Informe listo en 30 segundos</td>
+            <td class="hl ok">✓ Sí</td>
+            <td class="no">✗ Horas de setup</td>
+            <td class="no">✗ Setup por cliente</td>
+            <td class="no">✗ Horas</td>
+          </tr>
+          <tr>
+            <td class="row-label">Análisis en lenguaje natural (IA)</td>
+            <td class="hl ok">✓ Incluido</td>
+            <td class="no">✗ No</td>
+            <td class="no">✗ No</td>
+            <td class="no">✗ No</td>
+          </tr>
+          <tr>
+            <td class="row-label">Benchmarks del sector en España</td>
+            <td class="hl ok">✓ 12 sectores</td>
+            <td class="no">✗ No</td>
+            <td class="no">✗ No</td>
+            <td class="no">✗ No</td>
+          </tr>
+          <tr>
+            <td class="row-label">Recomendaciones accionables</td>
+            <td class="hl ok">✓ 3 por informe</td>
+            <td class="no">✗ No</td>
+            <td class="no">✗ No</td>
+            <td class="no">✗ Manual</td>
+          </tr>
+          <tr>
+            <td class="row-label">PDF white-label con tu logo</td>
+            <td class="hl ok">✓ Todos los planes</td>
+            <td class="no">✗ No</td>
+            <td class="ok">✓ Planes altos</td>
+            <td class="part">~ Manual</td>
+          </tr>
+          <tr>
+            <td class="row-label">Sin configuración técnica</td>
+            <td class="hl ok">✓ Cero setup</td>
+            <td class="no">✗ Requiere configuración</td>
+            <td class="part">~ Parcial</td>
+            <td class="ok">✓ Solo Excel</td>
+          </tr>
+          <tr>
+            <td class="row-label">Enlace compartible con cliente</td>
+            <td class="hl ok">✓ Incluido</td>
+            <td class="ok">✓ Sí</td>
+            <td class="ok">✓ Sí</td>
+            <td class="no">✗ No</td>
+          </tr>
+          <tr>
+            <td class="row-label">Precio de entrada</td>
+            <td class="hl" style="font-weight:500;color:#0A0A0A">297€/mes</td>
+            <td>Gratis (pero tu tiempo)</td>
+            <td>~89€/mes (solo datos)</td>
+            <td>Gratis (pero 40h/mes)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
 <!-- PRICING -->
-<section class="section" id="precios">
+<section class="section-alt" id="precios">
   <div class="container">
     <span class="eyebrow reveal">Precios</span>
     <h2 class="section-title reveal">Claro. Sin sorpresas.</h2>
     <p class="section-sub reveal">Cancela cuando quieras. Sin permanencias ni letra pequeña.</p>
-    <div class="plans reveal">
+
+    <!-- Toggle -->
+    <div class="pricing-toggle reveal" id="pricingToggle">
+      <span class="toggle-opt on" id="lblMonthly">Mensual</span>
+      <div class="toggle-track" id="billingToggle" onclick="toggleBilling()"></div>
+      <span class="toggle-opt" id="lblAnnual">Anual</span>
+      <span class="save-badge">Ahorra 2 meses</span>
+    </div>
+
+    <div class="plans reveal" id="plansContainer">
+      <!-- BASIC -->
       <div class="plan">
         <div class="plan-badge">Plan</div>
         <div class="plan-name">Básico</div>
-        <div class="plan-price">297€</div>
+        <div class="price-monthly"><span class="plan-cur">€</span><span class="plan-price">297</span></div>
+        <div class="price-annual"><span class="plan-cur">€</span><span class="plan-price">247</span></div>
         <div class="plan-period">/mes</div>
+        <div class="plan-save-line">Ahorras 600€ al año</div>
         <div class="plan-divider"></div>
         <div class="plan-limit">Hasta 10 informes/mes</div>
         <ul class="plan-features">
@@ -605,48 +1011,80 @@ footer{background:var(--ink);border-top:0.5px solid rgba(255,255,255,0.06);paddi
           <li>Benchmarks reales del sector en España</li>
           <li>Soporte por correo electrónico</li>
         </ul>
-        <a href="mailto:hola@reportly.es?subject=Quiero%20el%20plan%20B%C3%A1sico%20de%20Reportly&body=Hola%2C%20me%20interesa%20el%20plan%20B%C3%A1sico%20de%20297%E2%82%AC%2Fmes.%20%C2%BFPodr%C3%ADamos%20hablar%3F" class="plan-cta"><span>Empezar con el Básico</span></a>
+        <!-- STRIPE: Reemplaza href con tu Stripe Payment Link -->
+        <a href="https://buy.stripe.com/TU_LINK_BASICO_MENSUAL"
+           data-monthly="https://buy.stripe.com/TU_LINK_BASICO_MENSUAL"
+           data-annual="https://buy.stripe.com/TU_LINK_BASICO_ANUAL"
+           class="plan-cta"><span>Empezar con el Básico</span></a>
       </div>
+
+      <!-- GROWTH (featured) -->
       <div class="plan pop">
         <div class="plan-badge">Más popular</div>
         <div class="plan-name">Crecimiento</div>
-        <div class="plan-price">597€</div>
+        <div class="price-monthly"><span class="plan-cur">€</span><span class="plan-price">597</span></div>
+        <div class="price-annual"><span class="plan-cur">€</span><span class="plan-price">497</span></div>
         <div class="plan-period">/mes</div>
+        <div class="plan-save-line">Ahorras 1.200€ al año</div>
         <div class="plan-divider"></div>
         <div class="plan-limit">Hasta 30 informes/mes</div>
         <ul class="plan-features">
-          <li class="inherited">Todo lo del plan Básico, más:</li>
+          <li class="dim">Todo lo del plan Básico, más:</li>
           <li>Sesión mensual de estrategia (60 min)</li>
           <li>Soporte prioritario por WhatsApp</li>
           <li>Alertas automáticas semanales por cliente</li>
           <li>Onboarding personalizado en 48h</li>
         </ul>
-        <a href="mailto:hola@reportly.es?subject=Quiero%20el%20plan%20Crecimiento%20de%20Reportly&body=Hola%2C%20me%20interesa%20el%20plan%20Crecimiento%20de%20597%E2%82%AC%2Fmes.%20%C2%BFPodr%C3%ADamos%20hablar%3F" class="plan-cta"><span>Empezar con Crecimiento</span></a>
+        <!-- STRIPE: Reemplaza href con tu Stripe Payment Link -->
+        <a href="https://buy.stripe.com/TU_LINK_CRECIMIENTO_MENSUAL"
+           data-monthly="https://buy.stripe.com/TU_LINK_CRECIMIENTO_MENSUAL"
+           data-annual="https://buy.stripe.com/TU_LINK_CRECIMIENTO_ANUAL"
+           class="plan-cta"><span>Empezar con Crecimiento</span></a>
       </div>
+
+      <!-- PRO -->
       <div class="plan">
         <div class="plan-badge">Plan</div>
         <div class="plan-name">Pro</div>
-        <div class="plan-price">997€</div>
+        <div class="price-monthly"><span class="plan-cur">€</span><span class="plan-price">997</span></div>
+        <div class="price-annual"><span class="plan-cur">€</span><span class="plan-price">830</span></div>
         <div class="plan-period">/mes</div>
+        <div class="plan-save-line">Ahorras 2.004€ al año</div>
         <div class="plan-divider"></div>
         <div class="plan-limit">Informes ilimitados</div>
         <ul class="plan-features">
-          <li class="inherited">Todo lo del plan Crecimiento, más:</li>
+          <li class="dim">Todo lo del plan Crecimiento, más:</li>
           <li>Integración real con Meta Ads API</li>
           <li>Panel en directo para cada cliente</li>
           <li>Marca blanca completa</li>
           <li>2 sesiones estratégicas al mes</li>
           <li>Gestor de cuenta dedicado</li>
         </ul>
-        <a href="mailto:hola@reportly.es?subject=Quiero%20el%20plan%20Pro%20de%20Reportly&body=Hola%2C%20me%20interesa%20el%20plan%20Pro%20de%20997%E2%82%AC%2Fmes.%20%C2%BFPodr%C3%ADamos%20hablar%3F" class="plan-cta"><span>Hablar con el equipo</span></a>
+        <!-- STRIPE: Reemplaza href con tu Stripe Payment Link -->
+        <a href="https://buy.stripe.com/TU_LINK_PRO_MENSUAL"
+           data-monthly="https://buy.stripe.com/TU_LINK_PRO_MENSUAL"
+           data-annual="https://buy.stripe.com/TU_LINK_PRO_ANUAL"
+           class="plan-cta"><span>Hablar con el equipo</span></a>
       </div>
     </div>
+
     <p class="pricing-note reveal">¿No estás seguro qué plan necesitas? <a href="mailto:hola@reportly.es">Escríbenos</a> y te ayudamos.</p>
+
+    <!-- GUARANTEE -->
+    <div class="guarantee reveal">
+      <div class="guarantee-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div>
+        <div class="guarantee-title">Garantía de 30 días sin riesgo</div>
+        <div class="guarantee-desc">Si en los primeros 30 días no ahorras al menos 5 horas por cliente, te devolvemos el 100% del importe. Sin preguntas.</div>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- FAQ -->
-<section class="section-alt">
+<section class="section">
   <div class="container">
     <h2 class="section-title reveal">Preguntas frecuentes.</h2>
     <div class="faq-list" style="margin-top:40px">
@@ -654,6 +1092,7 @@ footer{background:var(--ink);border-top:0.5px solid rgba(255,255,255,0.06);paddi
       <div class="faq-item reveal"><div class="faq-q" onclick="toggleFaq(this)">¿Mis credenciales de Meta Ads están seguras?<span class="faq-icon">+</span></div><div class="faq-a">Sí. Usamos el sistema de permisos oficial de Meta — el mismo que usan Hootsuite o AgencyAnalytics. Solo pedimos acceso de lectura, no podemos modificar nada en tu cuenta. Puedes revocar el acceso en cualquier momento desde Meta Business.</div></div>
       <div class="faq-item reveal"><div class="faq-q" onclick="toggleFaq(this)">¿En qué se diferencia Reportly de AgencyAnalytics o Looker Studio?<span class="faq-icon">+</span></div><div class="faq-a">AgencyAnalytics muestra datos en paneles que el cliente tiene que interpretar. Looker Studio requiere configuración técnica por cada cliente. Reportly genera un informe en lenguaje natural con el análisis ya hecho y recomendaciones concretas. En 30 segundos, sin configuración.</div></div>
       <div class="faq-item reveal"><div class="faq-q" onclick="toggleFaq(this)">¿Puedo poner el logo y nombre de mi agencia?<span class="faq-icon">+</span></div><div class="faq-a">Sí, en todos los planes. El PDF lleva tu logo, el nombre de tu agencia y el nombre de tu cliente. Tu cliente recibe el informe como si lo hubieras preparado tú manualmente.</div></div>
+      <div class="faq-item reveal"><div class="faq-q" onclick="toggleFaq(this)">¿Cómo funciona el pago con Stripe?<span class="faq-icon">+</span></div><div class="faq-a">Al hacer clic en cualquier botón de compra se abre el checkout seguro de Stripe. Aceptamos todas las tarjetas de crédito y débito. La factura se envía automáticamente a tu correo. Puedes cancelar o cambiar de plan en cualquier momento desde tu portal de cliente.</div></div>
       <div class="faq-item reveal"><div class="faq-q" onclick="toggleFaq(this)">¿Puedo cancelar en cualquier momento?<span class="faq-icon">+</span></div><div class="faq-a">Sí. Sin permanencias ni penalizaciones. Si cancelas antes de que acabe el mes, tienes acceso hasta el final del período pagado.</div></div>
     </div>
   </div>
@@ -677,6 +1116,22 @@ footer{background:var(--ink);border-top:0.5px solid rgba(255,255,255,0.06);paddi
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </a>
     <p class="final-note reveal d3">Sin tarjeta de crédito · Sin configuración · 30 segundos</p>
+    <div class="final-trust reveal d4">
+      <div class="final-trust-item">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Pago seguro con Stripe
+      </div>
+      <div class="final-div"></div>
+      <div class="final-trust-item">
+        <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Garantía 30 días
+      </div>
+      <div class="final-div"></div>
+      <div class="final-trust-item">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        Cancela cuando quieras
+      </div>
+    </div>
   </div>
 </section>
 
@@ -684,11 +1139,11 @@ footer{background:var(--ink);border-top:0.5px solid rgba(255,255,255,0.06);paddi
 <footer>
   <div class="footer-inner">
     <div class="footer-logo">
-      <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
-        <path d="M6 26 C6 26 8 8 26 6" stroke="rgba(245,242,237,0.45)" stroke-width="1.8" stroke-linecap="round" fill="none"/>
-        <circle cx="6" cy="26" r="3.5" fill="rgba(245,242,237,0.45)"/>
+      <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
+        <path d="M6 26 C6 26 8 8 26 6" stroke="rgba(245,242,237,0.4)" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+        <circle cx="6" cy="26" r="3.5" fill="rgba(245,242,237,0.4)"/>
         <circle cx="26" cy="6" r="2.5" fill="#C4A35A"/>
-        <circle cx="16" cy="16" r="1.8" stroke="rgba(245,242,237,0.25)" stroke-width="1.2" fill="none"/>
+        <circle cx="16" cy="16" r="1.8" stroke="rgba(245,242,237,0.22)" stroke-width="1.2" fill="none"/>
       </svg>
       <span class="footer-logo-text">Reportly</span>
     </div>
@@ -696,142 +1151,159 @@ footer{background:var(--ink);border-top:0.5px solid rgba(255,255,255,0.06);paddi
       <a href="mailto:hola@reportly.es">hola@reportly.es</a>
       <a href="#precios">Precios</a>
       <a href="#como-funciona">Cómo funciona</a>
+      <a href="#roi">Calculadora ROI</a>
       <a href="https://app.reportly.es">Acceder a la app</a>
     </div>
+    <div class="footer-copy">© 2026 Reportly</div>
   </div>
 </footer>
 
 <script>
-// ── CUSTOM CURSOR ──────────────────────────────────────────
-const cursor = document.getElementById('cursor')
-const ring   = document.getElementById('cursor-ring')
+// ── CURSOR ──────────────────────────────────────────────────
+const cur = document.getElementById('cursor')
+const ring = document.getElementById('cursor-ring')
 let mx=0,my=0,rx=0,ry=0
-
-document.addEventListener('mousemove', e => {
-  mx = e.clientX; my = e.clientY
-  cursor.style.left = mx+'px'; cursor.style.top = my+'px'
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY
+  cur.style.left=mx+'px';cur.style.top=my+'px'
 })
-
 function animRing(){
-  rx += (mx-rx)*0.12; ry += (my-ry)*0.12
-  ring.style.left = rx+'px'; ring.style.top = ry+'px'
+  rx+=(mx-rx)*.12;ry+=(my-ry)*.12
+  ring.style.left=rx+'px';ring.style.top=ry+'px'
   requestAnimationFrame(animRing)
 }
 animRing()
-
-document.querySelectorAll('a,button,.quote-card,.feature,.plan,.kpi,.mockup').forEach(el => {
-  el.addEventListener('mouseenter', () => {
-    cursor.style.width='6px'; cursor.style.height='6px'
-    ring.style.width='52px'; ring.style.height='52px'
+document.querySelectorAll('a,button,.quote-card,.feature,.plan,.kpi,.mockup,.hc-btn,.m-btn').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{
+    cur.style.width='6px';cur.style.height='6px'
+    ring.style.width='52px';ring.style.height='52px'
   })
-  el.addEventListener('mouseleave', () => {
-    cursor.style.width='10px'; cursor.style.height='10px'
-    ring.style.width='36px'; ring.style.height='36px'
+  el.addEventListener('mouseleave',()=>{
+    cur.style.width='10px';cur.style.height='10px'
+    ring.style.width='36px';ring.style.height='36px'
   })
 })
 
-// ── ANIMATED MESH BACKGROUND ───────────────────────────────
-const canvas = document.getElementById('meshCanvas')
-const ctx    = canvas.getContext('2d')
-
+// ── MESH BACKGROUND ─────────────────────────────────────────
+const canvas=document.getElementById('meshCanvas')
+const ctx=canvas.getContext('2d')
 let W,H,t=0
-const blobs = [
-  {x:0.15,y:0.25,r:0.42,c:'rgba(196,163,90,',s:0.0004,ox:0.0003,oy:0.0002,a:0.09},
-  {x:0.80,y:0.70,r:0.38,c:'rgba(180,140,200,',s:0.0003,ox:-0.0002,oy:0.0003,a:0.06},
-  {x:0.50,y:0.10,r:0.50,c:'rgba(220,200,170,',s:0.0005,ox:0.0001,oy:-0.0002,a:0.12},
-  {x:0.90,y:0.20,r:0.32,c:'rgba(196,163,90,',s:0.0006,ox:-0.0003,oy:0.0001,a:0.07},
-  {x:0.20,y:0.80,r:0.45,c:'rgba(200,180,240,',s:0.0004,ox:0.0002,oy:-0.0003,a:0.05},
+const blobs=[
+  {x:.15,y:.25,r:.42,c:'rgba(196,163,90,',s:.0004,a:.09},
+  {x:.80,y:.70,r:.38,c:'rgba(180,140,200,',s:.0003,a:.06},
+  {x:.50,y:.10,r:.50,c:'rgba(220,200,170,',s:.0005,a:.12},
+  {x:.90,y:.20,r:.32,c:'rgba(196,163,90,',s:.0006,a:.07},
+  {x:.20,y:.80,r:.45,c:'rgba(200,180,240,',s:.0004,a:.05},
 ]
-
-function resize(){
-  W = canvas.width  = canvas.parentElement.offsetWidth
-  H = canvas.height = canvas.parentElement.offsetHeight
-}
-
+function resize(){W=canvas.width=canvas.parentElement.offsetWidth;H=canvas.height=canvas.parentElement.offsetHeight}
 function drawFrame(){
-  t += 0.5
-  ctx.clearRect(0,0,W,H)
-
-  // Base gradient
-  const base = ctx.createLinearGradient(0,0,W,H)
-  base.addColorStop(0,'#FFFFFF')
-  base.addColorStop(0.4,'#F8F5F0')
-  base.addColorStop(1,'#EDE8E0')
-  ctx.fillStyle = base
-  ctx.fillRect(0,0,W,H)
-
-  // Animated blobs
-  blobs.forEach((b,i) => {
-    const bx = (b.x + Math.sin(t*b.s*1000 + i) * 0.12) * W
-    const by = (b.y + Math.cos(t*b.s*1000 + i*1.3) * 0.1) * H
-    const br = b.r * Math.min(W,H)
-    const g  = ctx.createRadialGradient(bx,by,0,bx,by,br)
-    g.addColorStop(0, b.c + b.a + ')')
-    g.addColorStop(1, b.c + '0)')
-    ctx.fillStyle = g
-    ctx.fillRect(0,0,W,H)
+  t+=.5;ctx.clearRect(0,0,W,H)
+  const base=ctx.createLinearGradient(0,0,W,H)
+  base.addColorStop(0,'#FFFFFF');base.addColorStop(.4,'#F8F5F0');base.addColorStop(1,'#EDE8E0')
+  ctx.fillStyle=base;ctx.fillRect(0,0,W,H)
+  blobs.forEach((b,i)=>{
+    const bx=(b.x+Math.sin(t*b.s*1000+i)*.12)*W
+    const by=(b.y+Math.cos(t*b.s*1000+i*1.3)*.1)*H
+    const br=b.r*Math.min(W,H)
+    const g=ctx.createRadialGradient(bx,by,0,bx,by,br)
+    g.addColorStop(0,b.c+b.a+')');g.addColorStop(1,b.c+'0)')
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H)
   })
-
-  // Subtle dot grid
-  ctx.fillStyle = 'rgba(160,145,125,0.18)'
-  const spacing = 28
-  for(let x=0;x<W;x+=spacing){
-    for(let y=0;y<H;y+=spacing){
-      ctx.beginPath()
-      ctx.arc(x,y,0.8,0,Math.PI*2)
-      ctx.fill()
-    }
-  }
-
+  ctx.fillStyle='rgba(160,145,125,0.15)'
+  const sp=28
+  for(let x=0;x<W;x+=sp)for(let y=0;y<H;y+=sp){ctx.beginPath();ctx.arc(x,y,.8,0,Math.PI*2);ctx.fill()}
   requestAnimationFrame(drawFrame)
 }
+window.addEventListener('resize',resize);resize();drawFrame()
 
-window.addEventListener('resize', resize)
-resize()
-drawFrame()
+// ── NAV ─────────────────────────────────────────────────────
+const nav=document.getElementById('mainNav')
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>40))
 
-// ── NAV SCROLL ─────────────────────────────────────────────
-const nav = document.getElementById('mainNav')
-window.addEventListener('scroll', () => {
-  nav.classList.toggle('scrolled', window.scrollY > 40)
-})
+// ── WORD REVEAL ─────────────────────────────────────────────
+setTimeout(()=>{
+  document.querySelectorAll('.word').forEach(w=>w.classList.add('visible'))
+  document.querySelectorAll('.italic-wrap').forEach(w=>w.classList.add('visible'))
+},100)
 
-// ── WORD REVEAL ON LOAD ────────────────────────────────────
-setTimeout(() => {
-  document.querySelectorAll('.word').forEach(w => w.classList.add('visible'))
-  document.querySelectorAll('.italic-wrap').forEach(w => w.classList.add('visible'))
-}, 100)
+// ── SCROLL REVEAL ───────────────────────────────────────────
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})
+},{threshold:.1})
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el))
 
-// ── SCROLL REVEAL ──────────────────────────────────────────
-const obs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target) }
-  })
-}, { threshold: 0.1 })
-document.querySelectorAll('.reveal').forEach(el => obs.observe(el))
-
-// ── FAQ ────────────────────────────────────────────────────
-function toggleFaq(el) {
-  const item = el.parentElement
-  const open = item.classList.contains('open')
-  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'))
-  if(!open) item.classList.add('open')
+// ── FAQ ─────────────────────────────────────────────────────
+function toggleFaq(el){
+  const item=el.parentElement,open=item.classList.contains('open')
+  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'))
+  if(!open)item.classList.add('open')
 }
 
-// ── SMOOTH SCROLL ──────────────────────────────────────────
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
+// ── SMOOTH SCROLL ───────────────────────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
     e.preventDefault()
-    const t = document.querySelector(a.getAttribute('href'))
-    if(t) t.scrollIntoView({ behavior:'smooth', block:'start' })
+    const t=document.querySelector(a.getAttribute('href'))
+    if(t)t.scrollIntoView({behavior:'smooth',block:'start'})
   })
 })
 
-// ── PARALLAX HERO ──────────────────────────────────────────
-window.addEventListener('scroll', () => {
-  const y = window.scrollY
-  document.querySelector('.hero').style.transform = `translateY(${y*0.25}px)`
+// ── PARALLAX HERO ───────────────────────────────────────────
+window.addEventListener('scroll',()=>{
+  const hero=document.querySelector('.hero')
+  if(hero)hero.style.transform=`translateY(${window.scrollY*.2}px)`
 })
+
+// ── ROI CALCULATOR ──────────────────────────────────────────
+function calcRoi(){
+  const clients=parseInt(document.getElementById('roi-clients').value)
+  const hours=parseInt(document.getElementById('roi-hours').value)
+  const rate=parseInt(document.getElementById('roi-rate').value)
+
+  document.getElementById('val-clients').textContent=clients
+  document.getElementById('val-hours').textContent=hours
+
+  const totalHours=clients*hours
+  const monthlyValue=totalHours*rate
+  const annualValue=monthlyValue*12
+  const planCost=297
+  const roi=((monthlyValue-planCost)/planCost).toFixed(1)
+
+  document.getElementById('roi-main').textContent=monthlyValue.toLocaleString('es-ES')+'€'
+  document.getElementById('roi-hours-total').textContent=totalHours+'h'
+  document.getElementById('roi-annual').textContent=annualValue.toLocaleString('es-ES')+'€'
+  document.getElementById('roi-mult').textContent=roi+'x'
+}
+calcRoi()
+
+// ── PRICING TOGGLE ──────────────────────────────────────────
+let isAnnual=false
+function toggleBilling(){
+  isAnnual=!isAnnual
+  const toggle=document.getElementById('billingToggle')
+  const plans=document.getElementById('plansContainer')
+  const lblM=document.getElementById('lblMonthly')
+  const lblA=document.getElementById('lblAnnual')
+  const pricingArea=document.getElementById('precios')
+
+  if(isAnnual){
+    toggle.classList.add('on')
+    plans.classList.add('show-annual')
+    pricingArea.classList.add('show-annual')
+    lblM.classList.remove('on');lblA.classList.add('on')
+  } else {
+    toggle.classList.remove('on')
+    plans.classList.remove('show-annual')
+    pricingArea.classList.remove('show-annual')
+    lblA.classList.remove('on');lblM.classList.add('on')
+  }
+
+  // Update Stripe links
+  document.querySelectorAll('.plan-cta').forEach(btn=>{
+    const url=isAnnual?btn.dataset.annual:btn.dataset.monthly
+    if(url)btn.href=url
+  })
+}
 </script>
 </body>
 </html>
