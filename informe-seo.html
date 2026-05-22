@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reportly — Generador de Informes SEO Local</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+/* ─── RESET ─────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ─── VARIABLES ──────────────────────────────────────── */
+:root{
+  --ink:#0A0A0A;
+  --cream:#F7F4EF;
+  --white:#FFFFFF;
+  --muted:#9A9490;
+  --border:#E2DDD7;
+  --border-l:#EDE9E3;
+  --gold:#C4A35A;
+  --gold-l:#D4B36A;
+  --ok:#2D6A4F;
+  --ok-bg:#EAF4EE;
+  --err:#C0392B;
+  --ff-d:'Playfair Display',Georgia,serif;
+  --ff-b:'DM Sans',system-ui,sans-serif;
+  --sh-sm:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --sh-md:0 4px 16px rgba(0,0,0,.08),0 2px 6px rgba(0,0,0,.04);
+  --sh-lg:0 16px 48px rgba(0,0,0,.12),0 4px 16px rgba(0,0,0,.06);
+  --sh-xl:0 32px 80px rgba(0,0,0,.15),0 8px 24px rgba(0,0,0,.06);
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+
+html{scroll-behavior:smooth}
+
+body{
+  font-family:var(--ff-b);
+  background:var(--cream);
+  color:var(--ink);
+  min-height:100vh;
+  cursor:none;
+  overflow-x:hidden;
+}
+
+::selection{background:var(--ink);color:var(--cream)}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#C4B49A;border-radius:2px}
+
+/* ─── ANIMATIONS ─────────────────────────────────────── */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(22px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes pulse{
+  0%,100%{opacity:1}
+  50%{opacity:.4}
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes shimmer{
+  0%{background-position:-200% center}
+  100%{background-position:200% center}
+}
+@keyframes shimmerBtn{
+  0%{left:-100%}
+  100%{left:200%}
+}
+@keyframes drawArc{
+  from{stroke-dashoffset:70}
+  to{stroke-dashoffset:0}
+}
+@keyframes dotPop{
+  0%{opacity:0;transform:scale(0)}
+  70%{transform:scale(1.3)}
+  100%{opacity:1;transform:scale(1)}
+}
+@keyframes toastIn{
+  from{opacity:0;transform:translateX(16px)}
+  to{opacity:1;transform:translateX(0)}
+}
+@keyframes toastOut{
+  from{opacity:1;transform:translateX(0)}
+  to{opacity:0;transform:translateX(16px)}
+}
+
+/* ─── CANVAS ─────────────────────────────────────────── */
+#bg-canvas{
+  position:fixed;top:0;left:0;
+  width:100%;height:100%;
+  z-index:0;pointer-events:none;
+}
+
+/* ─── CURSOR ─────────────────────────────────────────── */
+.cur-dot,.cur-ring{
+  position:fixed;top:0;left:0;
+  pointer-events:none;z-index:9999;
+  mix-blend-mode:difference;
+  transform:translate(-50%,-50%);
+  transition:opacity .3s ease;
+  will-change:transform;
+}
+.cur-dot{
+  width:10px;height:10px;
+  background:#fff;border-radius:50%;
+}
+.cur-ring{
+  width:36px;height:36px;
+  border:1.5px solid rgba(255,255,255,.8);
+  border-radius:50%;
+  transition:width .25s var(--ease),height .25s var(--ease);
+}
+.cur-ring.expand{width:52px;height:52px}
+
+/* ─── NAV ────────────────────────────────────────────── */
+nav{
+  position:fixed;top:0;left:0;right:0;
+  z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 36px;height:64px;
+  background:rgba(247,244,239,.88);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:.5px solid rgba(196,163,90,.15);
+}
+.logo{
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--ff-d);font-size:1.2rem;font-weight:600;
+  color:var(--ink);text-decoration:none;cursor:none;
+  user-select:none;
+}
+.logo svg{width:28px;height:28px;overflow:visible}
+.logo .arc{
+  stroke-dasharray:70;
+  stroke-dashoffset:70;
+  animation:drawArc 1.4s var(--ease) .4s forwards;
+}
+.logo .goldot{
+  opacity:0;transform-origin:20px 8px;
+  animation:dotPop .5s var(--ease) 1.5s forwards;
+}
+.nav-badge{
+  font-family:var(--ff-b);font-size:.62rem;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:var(--gold);border:1px solid rgba(196,163,90,.5);
+  padding:4px 11px;border-radius:20px;
+}
+
+/* ─── SCREENS ────────────────────────────────────────── */
+.screen{
+  position:relative;z-index:1;
+  min-height:100vh;padding-top:64px;
+  display:none;
+}
+.screen.active{display:flex}
+
+/* ─── SCREEN 1 — UPLOAD ──────────────────────────────── */
+#screen-upload{
+  flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:80px 24px 64px;
+}
+
+.upload-header{
+  text-align:center;max-width:660px;
+  margin-bottom:44px;
+}
+.anim-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  font-size:.68rem;font-weight:600;
+  letter-spacing:.13em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:22px;
+  animation:fadeUp .6s var(--ease) both;
+}
+.anim-badge .dot{
+  width:6px;height:6px;
+  background:var(--gold);border-radius:50%;
+  animation:pulse 2s ease infinite;
+}
+.upload-header h1{
+  font-family:var(--ff-d);
+  font-size:clamp(1.9rem,4vw,2.8rem);
+  font-weight:600;line-height:1.2;
+  color:var(--ink);margin-bottom:18px;
+  animation:fadeUp .6s var(--ease) .1s both;
+}
+.upload-header h1 em{
+  font-style:italic;position:relative;display:inline-block;
+}
+.upload-header h1 em::after{
+  content:'';
+  position:absolute;bottom:-3px;left:0;right:0;
+  height:2px;
+  background:linear-gradient(90deg,var(--gold),var(--gold-l),var(--gold));
+  background-size:200% 100%;
+  animation:shimmer 2.5s linear infinite;
+}
+.upload-header p{
+  font-size:.95rem;font-weight:300;
+  color:var(--muted);line-height:1.65;
+  animation:fadeUp .6s var(--ease) .2s both;
+}
+
+.upload-form{
+  width:100%;max-width:740px;
+  display:flex;flex-direction:column;gap:18px;
+}
+
+/* API key row */
+.apikey-row{
+  background:var(--white);
+  border:1px solid var(--border);border-radius:10px;
+  padding:14px 18px;
+  display:flex;align-items:center;gap:12px;
+  box-shadow:var(--sh-sm);
+  animation:fadeUp .6s var(--ease) .25s both;
+}
+.apikey-dot{
+  width:8px;height:8px;flex-shrink:0;
+  border-radius:50%;background:var(--border);
+  transition:background .3s;
+}
+.apikey-dot.live{background:var(--ok)}
+.apikey-row label{
+  font-size:.72rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:.1em;
+  color:var(--muted);white-space:nowrap;
+}
+.apikey-row input{
+  flex:1;background:none;border:none;outline:none;
+  font-family:'Courier New',monospace;
+  font-size:.82rem;color:var(--ink);
+  letter-spacing:.04em;cursor:none;
+}
+.apikey-row input::placeholder{color:var(--border-l);letter-spacing:0}
+
+/* Client name */
+.field-wrap{animation:fadeUp .6s var(--ease) .3s both}
+.field-wrap label{
+  display:block;font-size:.74rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:.1em;
+  color:var(--muted);margin-bottom:8px;
+}
+.field-wrap input[type=text]{
+  width:100%;padding:13px 16px;
+  background:var(--white);
+  border:1.5px solid var(--border);border-radius:8px;
+  font-family:var(--ff-b);font-size:1rem;
+  color:var(--ink);outline:none;
+  transition:border-color .2s,box-shadow .2s;
+  box-shadow:var(--sh-sm);cursor:none;
+}
+.field-wrap input[type=text]:focus{
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(196,163,90,.12),var(--sh-sm);
+}
+.field-wrap input[type=text]::placeholder{color:var(--border)}
+
+/* Upload grid */
+.upload-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;
+  animation:fadeUp .6s var(--ease) .35s both;
+}
+.upload-zone{
+  position:relative;
+  background:var(--white);
+  border:1.5px dashed var(--border);border-radius:12px;
+  padding:32px 20px;text-align:center;
+  cursor:none;
+  transition:all .25s var(--ease);
+  box-shadow:var(--sh-sm);overflow:hidden;
+}
+.upload-zone input[type=file]{
+  position:absolute;opacity:0;
+  width:0;height:0;pointer-events:none;
+}
+.upload-zone:hover{
+  border-color:var(--gold);border-style:solid;
+  background:rgba(196,163,90,.03);
+  transform:translateY(-2px);
+  box-shadow:var(--sh-md);
+}
+.upload-zone.over{
+  border-color:var(--gold);border-style:solid;
+  background:rgba(196,163,90,.06);
+  transform:translateY(-2px) scale(1.015);
+  box-shadow:var(--sh-md);
+}
+.upload-zone.done{
+  border-color:var(--ok);border-style:solid;
+  background:var(--ok-bg);
+}
+.z-icon{
+  font-size:2.1rem;margin-bottom:10px;display:block;
+  transition:transform .25s var(--ease);
+}
+.upload-zone:hover .z-icon,.upload-zone.over .z-icon{transform:scale(1.12)}
+.z-title{
+  font-family:var(--ff-d);font-size:1rem;font-weight:600;
+  color:var(--ink);margin-bottom:5px;
+}
+.z-hint{font-size:.78rem;color:var(--muted);font-weight:300;line-height:1.45}
+
+.z-info{
+  display:none;margin-top:12px;padding-top:12px;
+  border-top:1px solid rgba(45,106,79,.2);
+}
+.z-fname{
+  font-size:.8rem;font-weight:500;color:var(--ok);
+  display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.z-rows{font-size:.73rem;color:var(--ok);opacity:.7;margin-top:4px}
+
+/* Generate button */
+.btn-gen{
+  width:100%;padding:16px 28px;
+  background:var(--ink);color:var(--cream);
+  border:none;border-radius:0;
+  font-family:var(--ff-b);font-size:1rem;font-weight:500;
+  letter-spacing:.025em;cursor:none;
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  transition:background .2s,transform .15s var(--ease),box-shadow .2s;
+  animation:fadeUp .6s var(--ease) .4s both;
+}
+.btn-gen::after{
+  content:'';
+  position:absolute;top:0;left:-100%;
+  width:60%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(196,163,90,.25),transparent);
+  transition:none;
+}
+.btn-gen:hover::after{
+  animation:shimmerBtn .7s var(--ease) forwards;
+}
+.btn-gen:hover:not(:disabled){transform:translateY(-1px);box-shadow:var(--sh-md)}
+.btn-gen:disabled{background:#C3BEB8;cursor:not-allowed}
+.btn-gen:disabled::after{display:none}
+
+/* ─── SCREEN 2 — LOADING ─────────────────────────────── */
+#screen-loading{
+  flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;gap:28px;padding:40px 24px;
+}
+.spinner-wrap{position:relative;width:72px;height:72px}
+.spinner-ring{
+  width:72px;height:72px;
+  border:2px solid rgba(196,163,90,.2);
+  border-top-color:var(--gold);
+  border-radius:50%;
+  animation:spin 1.1s linear infinite;
+}
+.spinner-core{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:8px;height:8px;
+  background:var(--gold);border-radius:50%;
+  animation:pulse 1.1s ease infinite;
+}
+#screen-loading h2{
+  font-family:var(--ff-d);font-size:1.65rem;font-weight:400;
+}
+#screen-loading .sub{
+  font-size:.88rem;color:var(--muted);font-weight:300;margin-top:-14px;
+}
+.load-steps{display:flex;flex-direction:column;gap:13px;text-align:left}
+.load-step{
+  display:flex;align-items:center;gap:12px;
+  opacity:.25;font-size:.9rem;color:var(--ink);
+  transition:opacity .55s var(--ease);
+}
+.load-step.on{opacity:1}
+.step-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--border);flex-shrink:0;
+  transition:background .3s;
+}
+.load-step.on .step-dot{background:var(--gold)}
+
+/* ─── SCREEN 3 — REPORT ──────────────────────────────── */
+#screen-report{
+  flex-direction:column;
+  padding:80px 24px 60px;
+}
+.rpt-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  max-width:880px;margin:0 auto 22px;width:100%;
+  flex-wrap:wrap;gap:12px;
+}
+.rpt-status{display:flex;align-items:center;gap:8px;font-size:.9rem;font-weight:500}
+.rpt-status .sdot{
+  width:8px;height:8px;background:var(--ok);
+  border-radius:50%;animation:pulse 2s ease infinite;
+}
+.rpt-btns{display:flex;gap:10px;flex-wrap:wrap}
+.btn-ghost{
+  padding:9px 18px;background:none;
+  border:1px solid var(--border);border-radius:6px;
+  font-family:var(--ff-b);font-size:.84rem;font-weight:500;
+  color:var(--ink);cursor:none;
+  transition:border-color .2s,background .2s;
+}
+.btn-ghost:hover{border-color:var(--ink);background:rgba(10,10,10,.04)}
+.btn-dl{
+  padding:9px 18px;background:var(--gold);border:none;border-radius:6px;
+  font-family:var(--ff-b);font-size:.84rem;font-weight:500;
+  color:#fff;cursor:none;
+  transition:background .2s,transform .15s var(--ease),box-shadow .2s;
+}
+.btn-dl:hover{background:var(--gold-l);transform:translateY(-1px);box-shadow:var(--sh-sm)}
+
+.rpt-card{
+  width:100%;max-width:880px;margin:0 auto;
+  background:var(--white);
+  border:1px solid var(--border);border-radius:16px;
+  box-shadow:var(--sh-lg);overflow:hidden;
+  animation:fadeUp .5s var(--ease) both;
+}
+
+/* ─── REPORT INNER (generated HTML) ─────────────────── */
+.ri .ri-head{
+  background:linear-gradient(135deg,#0A0A0A 0%,#1e1e1e 100%);
+  padding:44px 52px;
+}
+.ri .ri-head h1{
+  font-family:var(--ff-d);font-size:1.65rem;font-weight:400;
+  color:#fff;margin-bottom:8px;
+}
+.ri .ri-head .rdate{font-size:.82rem;color:rgba(255,255,255,.45);font-weight:300}
+
+.ri .ri-body{padding:44px 52px}
+
+.ri h2{
+  font-family:var(--ff-d);font-size:1.15rem;font-weight:600;
+  color:#0d47a1;
+  border-bottom:2px solid #e8f0fe;
+  padding-bottom:8px;margin:36px 0 16px;
+}
+.ri h2:first-child{margin-top:0}
+.ri h3{font-size:.97rem;font-weight:600;color:var(--ink);margin:18px 0 7px}
+.ri p{font-size:.88rem;line-height:1.72;color:#2a2a2a;margin-bottom:10px}
+.ri ul,.ri ol{margin:6px 0 14px 18px;font-size:.88rem;line-height:1.72;color:#2a2a2a}
+.ri li{margin-bottom:3px}
+
+.ri .metric{
+  background:#e8f0fe;border-left:4px solid #1a73e8;
+  border-radius:0 8px 8px 0;
+  padding:14px 18px;margin:9px 0;font-size:.88rem;color:#0a3270;
+}
+.ri .positivo{
+  background:#e6f4ea;border-left:4px solid #34a853;
+  border-radius:0 8px 8px 0;
+  padding:14px 18px;margin:9px 0;font-size:.88rem;color:#1e4620;
+}
+.ri .mejora{
+  background:#fef7e0;border-left:4px solid #fbbc04;
+  border-radius:0 8px 8px 0;
+  padding:14px 18px;margin:9px 0;font-size:.88rem;color:#5a4000;
+}
+.ri .accion{
+  background:#e8f0fe;border-left:4px solid #1a73e8;
+  border-radius:0 8px 8px 0;
+  padding:14px 18px;margin:9px 0;font-size:.88rem;color:#0a3270;
+}
+.ri .accion strong{font-weight:700;font-size:.95rem;color:#1a73e8;margin-right:4px}
+
+.ri .table-wrap{overflow-x:auto;margin:12px 0}
+.ri table{width:100%;border-collapse:collapse;font-size:.83rem}
+.ri th{
+  background:#f8f9fa;border:1px solid #e0e0e0;
+  padding:9px 12px;text-align:left;font-weight:600;color:#333;
+}
+.ri td{border:1px solid #e0e0e0;padding:9px 12px;color:#444}
+.ri tr:nth-child(even) td{background:#fafafa}
+
+.rpt-footer{
+  background:#f8f8f6;border-top:1px solid var(--border);
+  padding:15px 52px;
+  font-size:.76rem;color:var(--muted);text-align:center;font-weight:300;
+  letter-spacing:.03em;
+}
+
+/* ─── ERROR STATE ────────────────────────────────────── */
+.err-state{text-align:center;padding:56px 40px}
+.err-state h3{font-family:var(--ff-d);font-size:1.3rem;color:var(--err);margin-bottom:12px}
+.err-state p{font-size:.88rem;color:var(--muted);margin-bottom:8px;line-height:1.6}
+.err-state code{
+  display:block;background:#fff5f5;border:1px solid #ffd5d5;
+  border-radius:6px;padding:10px 14px;font-size:.78rem;
+  color:var(--err);margin:14px 0;text-align:left;word-break:break-all;
+}
+.btn-retry{
+  margin-top:8px;padding:10px 24px;
+  background:var(--ink);color:var(--cream);
+  border:none;border-radius:6px;
+  font-family:var(--ff-b);font-size:.88rem;font-weight:500;
+  cursor:none;transition:opacity .2s;
+}
+.btn-retry:hover{opacity:.8}
+
+/* ─── TOAST ──────────────────────────────────────────── */
+#toast{
+  position:fixed;top:78px;right:22px;z-index:2000;
+  background:var(--white);
+  border:1px solid var(--border);border-left:3px solid var(--ok);
+  border-radius:8px;padding:11px 16px;
+  font-size:.84rem;font-weight:500;color:var(--ink);
+  box-shadow:var(--sh-md);
+  display:none;align-items:center;gap:7px;max-width:300px;
+}
+#toast.show{display:flex;animation:toastIn .35s var(--ease) both}
+#toast.err{border-left-color:var(--err)}
+
+/* ─── RESPONSIVE ─────────────────────────────────────── */
+@media(max-width:600px){
+  nav{padding:0 18px}
+  .upload-grid{grid-template-columns:1fr}
+  .upload-header h1{font-size:1.75rem}
+  .ri .ri-head,.ri .ri-body{padding:28px 24px}
+  .rpt-footer{padding:14px 24px}
+  .rpt-bar{flex-direction:column;align-items:flex-start}
+  .apikey-row{flex-direction:column;align-items:flex-start;gap:6px}
+}
+
+/* ─── PRINT ──────────────────────────────────────────── */
+@media print{
+  nav,.rpt-bar,#toast,.cur-dot,.cur-ring,#bg-canvas{display:none!important}
+  body{background:#fff;cursor:default}
+  #screen-report{display:flex!important;padding:0}
+  .rpt-card{box-shadow:none;border:none;max-width:100%;border-radius:0}
+  .ri .ri-head{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .ri .metric,.ri .positivo,.ri .mejora,.ri .accion{
+    -webkit-print-color-adjust:exact;print-color-adjust:exact
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- CANVAS -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- CURSOR -->
+<div class="cur-dot" id="cur-dot"></div>
+<div class="cur-ring" id="cur-ring"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="14" cy="14" r="11" stroke="#0A0A0A" stroke-width="1.5" fill="none"
+        stroke-dasharray="70" stroke-dashoffset="70"
+        class="arc"
+        style="stroke-dasharray:70;stroke-dashoffset:70;animation:drawArc 1.4s cubic-bezier(.16,1,.3,1) .4s forwards"/>
+      <circle cx="20" cy="8" r="3" fill="#C4A35A" class="goldot"
+        style="opacity:0;transform-origin:20px 8px;animation:dotPop .5s cubic-bezier(.16,1,.3,1) 1.5s forwards"/>
+    </svg>
+    Reportly
+  </div>
+  <span class="nav-badge">SEO LOCAL · BETA</span>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════
+     SCREEN 1 — UPLOAD
+════════════════════════════════════════════════════ -->
+<section class="screen active" id="screen-upload">
+
+  <div class="upload-header">
+    <div class="anim-badge"><span class="dot"></span>GENERADOR DE INFORMES</div>
+    <h1>Tu informe de SEO Local,<br>listo en <em>30 segundos</em></h1>
+    <p>Sube los datos de tus clientes de Google My Business y Search Console.<br>
+       La IA analiza todo y genera un informe profesional listo para entregar.</p>
+  </div>
+
+  <div class="upload-form">
+
+    <!-- API Key -->
+    <div class="apikey-row">
+      <div class="apikey-dot" id="apikey-dot"></div>
+      <label for="apikey-in">API KEY</label>
+      <input type="password" id="apikey-in"
+             placeholder="sk-ant-api03-xxxxxxxxxxxxxxxxxxxxxxxx"
+             autocomplete="off" spellcheck="false">
+    </div>
+
+    <!-- Client name -->
+    <div class="field-wrap">
+      <label for="client-name">Nombre del cliente</label>
+      <input type="text" id="client-name"
+             placeholder="Ej: Clínica Dental García" autocomplete="off">
+    </div>
+
+    <!-- Upload zones -->
+    <div class="upload-grid">
+
+      <!-- GMB -->
+      <div class="upload-zone" id="zone-gmb">
+        <input type="file" id="inp-gmb" accept=".csv,.xls,.xlsx,.tsv,.txt">
+        <span class="z-icon" id="icon-gmb">📍</span>
+        <div class="z-title">Google My Business</div>
+        <div class="z-hint">Arrastra tu CSV o Excel aquí,<br>o haz clic para seleccionar</div>
+        <div class="z-info" id="info-gmb">
+          <div class="z-fname" id="fname-gmb">✓ <span></span></div>
+          <div class="z-rows" id="frows-gmb"></div>
+        </div>
+      </div>
+
+      <!-- GSC -->
+      <div class="upload-zone" id="zone-gsc">
+        <input type="file" id="inp-gsc" accept=".csv,.xls,.xlsx,.tsv,.txt">
+        <span class="z-icon" id="icon-gsc">🔍</span>
+        <div class="z-title">Google Search Console</div>
+        <div class="z-hint">Arrastra tu CSV o Excel aquí,<br>o haz clic para seleccionar</div>
+        <div class="z-info" id="info-gsc">
+          <div class="z-fname" id="fname-gsc">✓ <span></span></div>
+          <div class="z-rows" id="frows-gsc"></div>
+        </div>
+      </div>
+
+    </div><!-- /upload-grid -->
+
+    <!-- Button -->
+    <button class="btn-gen" id="btn-gen" disabled>
+      <span>⚡</span>
+      <span id="btn-txt">Generar informe con IA</span>
+    </button>
+
+  </div><!-- /upload-form -->
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     SCREEN 2 — LOADING
+════════════════════════════════════════════════════ -->
+<section class="screen" id="screen-loading">
+  <div class="spinner-wrap">
+    <div class="spinner-ring"></div>
+    <div class="spinner-core"></div>
+  </div>
+  <h2>Analizando datos de <span id="ld-client">tu cliente</span>…</h2>
+  <p class="sub">La IA está procesando los archivos</p>
+  <div class="load-steps">
+    <div class="load-step" id="step1">
+      <div class="step-dot"></div><span>① Leyendo archivos</span>
+    </div>
+    <div class="load-step" id="step2">
+      <div class="step-dot"></div><span>② Analizando métricas con Claude</span>
+    </div>
+    <div class="load-step" id="step3">
+      <div class="step-dot"></div><span>③ Generando informe profesional</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     SCREEN 3 — REPORT
+════════════════════════════════════════════════════ -->
+<section class="screen" id="screen-report">
+  <div class="rpt-bar">
+    <div class="rpt-status">
+      <div class="sdot"></div>
+      Informe listo para <strong id="rpt-client" style="margin-left:4px">—</strong>
+    </div>
+    <div class="rpt-btns">
+      <button class="btn-ghost" id="btn-new">← Nuevo informe</button>
+      <button class="btn-dl" id="btn-dl">⬇ Descargar PDF</button>
+    </div>
+  </div>
+
+  <div class="rpt-card">
+    <div class="ri" id="rpt-content"></div>
+    <div class="rpt-footer">Generado con Reportly · reportly.es</div>
+  </div>
+</section>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- ═══════════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════════ -->
+<script>
+/* ── STATE ─────────────────────────────────────────── */
+const S = {
+  gmb: null, gmbFile: null, gmbRows: 0,
+  gsc: null, gscFile: null, gscRows: 0,
+  client: '', apiKey: ''
+};
+
+/* ── CANVAS MESH BACKGROUND ─────────────────────────── */
+(function(){
+  const cv = document.getElementById('bg-canvas');
+  const cx = cv.getContext('2d');
+  let W, H;
+
+  const blobs = [
+    { ox:.15, oy:.25, r:320, c:'rgba(196,163,90,0.065)', p:0   },
+    { ox:.82, oy:.18, r:260, c:'rgba(196,163,90,0.045)', p:1.2 },
+    { ox:.5,  oy:.72, r:410, c:'rgba(212,179,106,0.05)', p:2.5 },
+    { ox:.08, oy:.82, r:210, c:'rgba(196,163,90,0.07)',  p:3.7 },
+    { ox:.9,  oy:.58, r:360, c:'rgba(247,244,239,0.09)', p:5.0 },
+  ];
+
+  let t = 0;
+
+  function resize(){
+    W = cv.width  = window.innerWidth;
+    H = cv.height = window.innerHeight;
+  }
+
+  function draw(){
+    cx.clearRect(0,0,W,H);
+    t += .004;
+    blobs.forEach(b => {
+      const x = (b.ox + Math.sin(t*.6 + b.p)*.09) * W;
+      const y = (b.oy + Math.cos(t*.45 + b.p)*.07) * H;
+      const g = cx.createRadialGradient(x,y,0, x,y,b.r);
+      g.addColorStop(0, b.c);
+      g.addColorStop(1,'rgba(247,244,239,0)');
+      cx.beginPath(); cx.arc(x,y,b.r,0,Math.PI*2);
+      cx.fillStyle = g; cx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+  draw();
+})();
+
+/* ── CURSOR ─────────────────────────────────────────── */
+(function(){
+  const dot  = document.getElementById('cur-dot');
+  const ring = document.getElementById('cur-ring');
+  let mx=0, my=0, rx=0, ry=0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx+'px'; dot.style.top = my+'px';
+  });
+
+  (function loop(){
+    rx += (mx-rx)*.13; ry += (my-ry)*.13;
+    ring.style.left = rx+'px'; ring.style.top = ry+'px';
+    requestAnimationFrame(loop);
+  })();
+
+  document.addEventListener('mouseleave',() => { dot.style.opacity='0'; ring.style.opacity='0'; });
+  document.addEventListener('mouseenter',() => { dot.style.opacity='1'; ring.style.opacity='1'; });
+
+  document.addEventListener('mouseover', e => {
+    if (e.target.closest('button,a,.upload-zone,input')) ring.classList.add('expand');
+  });
+  document.addEventListener('mouseout', e => {
+    if (e.target.closest('button,a,.upload-zone,input')) ring.classList.remove('expand');
+  });
+})();
+
+/* ── TOAST ──────────────────────────────────────────── */
+function toast(msg, isErr=false, dur=3200){
+  const el = document.getElementById('toast');
+  el.textContent = (isErr ? '✕ ' : '✓ ') + msg;
+  el.className = 'show' + (isErr ? ' err' : '');
+  clearTimeout(el._t);
+  el._t = setTimeout(()=> el.classList.remove('show'), dur);
+}
+
+/* ── SCREEN ─────────────────────────────────────────── */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+}
+
+/* ── FILE READING ────────────────────────────────────── */
+function readFile(file){
+  return new Promise((res, rej) => {
+    const fr = new FileReader();
+    fr.onload = e => {
+      try {
+        const arr = new Uint8Array(e.target.result);
+        const wb  = XLSX.read(arr, {type:'array'});
+        const ws  = wb.Sheets[wb.SheetNames[0]];
+        res(XLSX.utils.sheet_to_csv(ws));
+      } catch(_) {
+        const fr2 = new FileReader();
+        fr2.onload = ev => res(ev.target.result);
+        fr2.onerror = rej;
+        fr2.readAsText(file);
+      }
+    };
+    fr.onerror = () => {
+      const fr2 = new FileReader();
+      fr2.onload = ev => res(ev.target.result);
+      fr2.onerror = rej;
+      fr2.readAsText(file);
+    };
+    fr.readAsArrayBuffer(file);
+  });
+}
+
+function countRows(csv){
+  return Math.max(0, csv.split('\n').filter(r=>r.trim()).length - 1);
+}
+
+function trimCSV(csv, max=250){
+  const lines = csv.split('\n').filter(l=>l.trim());
+  if(lines.length <= max) return csv;
+  return lines.slice(0,max).join('\n') + `\n[... ${lines.length-max} filas adicionales omitidas para brevedad ...]`;
+}
+
+/* ── UPLOAD ZONES ────────────────────────────────────── */
+function setupZone(zoneId, inputId, infoId, fnameId, frowsId, iconId, key){
+  const zone  = document.getElementById(zoneId);
+  const input = document.getElementById(inputId);
+
+  async function handle(file){
+    if(!file) return;
+    try {
+      const csv  = await readFile(file);
+      const rows = countRows(csv);
+      S[key]         = csv;
+      S[key+'File']  = file;
+      S[key+'Rows']  = rows;
+
+      zone.classList.add('done');
+      document.getElementById(iconId).textContent = '✅';
+      document.getElementById(fnameId).querySelector('span').textContent = file.name;
+      document.getElementById(frowsId).textContent = rows + ' filas de datos detectadas';
+      document.getElementById(infoId).style.display = 'block';
+      updateBtn();
+      toast('Archivo cargado: ' + file.name);
+    } catch(err){
+      toast('Error al leer: ' + err.message, true);
+    }
+  }
+
+  zone.addEventListener('click', e => {
+    if(!e.target.matches('input[type=file]')) input.click();
+  });
+
+  zone.addEventListener('dragover', e => {
+    e.preventDefault(); zone.classList.add('over');
+  });
+  zone.addEventListener('dragleave', e => {
+    if(!zone.contains(e.relatedTarget)) zone.classList.remove('over');
+  });
+  zone.addEventListener('drop', e => {
+    e.preventDefault(); zone.classList.remove('over');
+    const f = e.dataTransfer.files[0];
+    if(f) handle(f);
+  });
+
+  input.addEventListener('change', e => {
+    if(e.target.files[0]) handle(e.target.files[0]);
+  });
+}
+
+setupZone('zone-gmb','inp-gmb','info-gmb','fname-gmb','frows-gmb','icon-gmb','gmb');
+setupZone('zone-gsc','inp-gsc','info-gsc','fname-gsc','frows-gsc','icon-gsc','gsc');
+
+/* ── BUTTON STATE ────────────────────────────────────── */
+function updateBtn(){
+  const btn = document.getElementById('btn-gen');
+  const txt = document.getElementById('btn-txt');
+  const hg = !!S.gmb, hs = !!S.gsc;
+
+  if(hg && hs){
+    btn.disabled = false;
+    txt.textContent = 'Generar informe con IA';
+  } else if(hg){
+    btn.disabled = false;
+    txt.textContent = 'Generar informe parcial (solo GMB)';
+  } else if(hs){
+    btn.disabled = false;
+    txt.textContent = 'Generar informe parcial (solo GSC)';
+  } else {
+    btn.disabled = true;
+    txt.textContent = 'Generar informe con IA';
+  }
+}
+
+/* ── API KEY WATCHER ─────────────────────────────────── */
+document.getElementById('apikey-in').addEventListener('input', function(){
+  S.apiKey = this.value.trim();
+  const dot = document.getElementById('apikey-dot');
+  dot.className = 'apikey-dot' + (S.apiKey.startsWith('sk-ant') ? ' live' : '');
+});
+
+document.getElementById('client-name').addEventListener('input', function(){
+  S.client = this.value.trim();
+});
+
+/* ── GENERATE ────────────────────────────────────────── */
+document.getElementById('btn-gen').addEventListener('click', async () => {
+  const apiKey = S.apiKey;
+  if(!apiKey || !apiKey.startsWith('sk-ant')){
+    toast('Introduce tu API Key de Anthropic primero', true, 4000);
+    document.getElementById('apikey-in').focus();
+    return;
+  }
+
+  const client = S.client || 'el cliente';
+
+  // → Loading
+  showScreen('loading');
+  document.getElementById('ld-client').textContent = client;
+  document.getElementById('step1').classList.add('on');
+  setTimeout(()=> document.getElementById('step2').classList.add('on'), 1500);
+  setTimeout(()=> document.getElementById('step3').classList.add('on'), 3200);
+
+  const today = new Date().toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'});
+
+  // Build prompt
+  let prompt = `Eres experto en SEO local y Google My Business. Analiza los datos reales del cliente "${client}".\n\n`;
+
+  if(S.gmb){
+    prompt += `=== DATOS GOOGLE MY BUSINESS ===\n${trimCSV(S.gmb)}\n\n`;
+  }
+  if(S.gsc){
+    prompt += `=== DATOS GOOGLE SEARCH CONSOLE ===\n${trimCSV(S.gsc)}\n\n`;
+  }
+
+  prompt += `Fecha del informe: ${today}
+
+INSTRUCCIONES CRÍTICAS:
+- Genera ÚNICAMENTE HTML puro, sin markdown, sin bloques de código, sin \`\`\`html
+- Usa EXACTAMENTE las clases CSS: metric, positivo, mejora, accion
+- Sé específico con los números reales de los datos (cita cifras exactas)
+- El informe debe impresionar a un cliente en una reunión de ventas
+
+Estructura HTML exacta a generar:
+
+<div class="ri-head">
+<h1>📊 Informe SEO Local — ${client}</h1>
+<div class="rdate">Generado el ${today}</div>
+</div>
+<div class="ri-body">
+
+<h2>1. Resumen Ejecutivo</h2>
+[3-4 divs class="metric" con las métricas más relevantes y su valor exacto de los datos]
+
+<h2>2. Análisis Google My Business</h2>
+[párrafo de contexto + análisis detallado de cada métrica: llamadas, visitas dirección, clics web, fotos vistas, etc. Con comparativas y tendencias si las hay]
+
+<h2>3. Análisis Google Search Console</h2>
+[análisis de keywords principales: CTR, posiciones, impresiones. Tabla con top 5 búsquedas si aplica]
+
+<h2>4. Puntos Fuertes del Periodo</h2>
+[3-4 divs class="positivo" con datos específicos y positivos]
+
+<h2>5. Oportunidades de Mejora</h2>
+[3-4 divs class="mejora" explicando qué mejorar y por qué importa, con datos]
+
+<h2>6. Acciones Prioritarias — Próximo Mes</h2>
+<div class="accion"><strong>1.</strong> Acción concreta basada en los datos</div>
+<div class="accion"><strong>2.</strong> Acción concreta basada en los datos</div>
+<div class="accion"><strong>3.</strong> Acción concreta basada en los datos</div>
+
+</div>
+
+Genera el informe ahora:`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body: JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens: 4096,
+        messages:[{ role:'user', content: prompt }]
+      })
+    });
+
+    if(!resp.ok){
+      let errMsg = `HTTP ${resp.status}`;
+      try { const d = await resp.json(); errMsg = d.error?.message || errMsg; } catch(_){}
+      throw new Error(errMsg);
+    }
+
+    const data = await resp.json();
+    const html = data.content[0].text;
+
+    // Render
+    document.getElementById('rpt-client').textContent = client;
+    document.getElementById('rpt-content').innerHTML = html;
+
+    // Staggered card animation
+    const cards = document.querySelectorAll('.ri .metric,.ri .positivo,.ri .mejora,.ri .accion');
+    cards.forEach((c,i)=>{
+      c.style.cssText = `opacity:0;transform:translateY(14px);transition:opacity .4s cubic-bezier(.16,1,.3,1) ${i*.07}s,transform .4s cubic-bezier(.16,1,.3,1) ${i*.07}s`;
+      setTimeout(()=>{ c.style.opacity='1'; c.style.transform='translateY(0)'; },60);
+    });
+
+    showScreen('report');
+    toast('Informe generado con éxito ✨');
+
+  } catch(err){
+    document.getElementById('rpt-client').textContent = client;
+    document.getElementById('rpt-content').innerHTML = `
+      <div class="err-state">
+        <h3>Error al generar el informe</h3>
+        <p>No se pudo conectar con la API de Anthropic. Verifica tu API Key y que el archivo sea válido.</p>
+        <code>${err.message}</code>
+        <p style="font-size:.78rem;color:#bbb">Asegúrate de que la API Key comienza con <strong>sk-ant-</strong> y tiene saldo disponible.</p>
+        <button class="btn-retry" onclick="document.getElementById('btn-new').click()">← Volver e intentarlo de nuevo</button>
+      </div>`;
+    showScreen('report');
+    toast('Error de API: ' + err.message.slice(0,55), true, 6000);
+  }
+});
+
+/* ── NEW REPORT ──────────────────────────────────────── */
+document.getElementById('btn-new').addEventListener('click', ()=>{
+  ['gmb','gsc'].forEach(k=>{
+    S[k]=null; S[k+'File']=null; S[k+'Rows']=0;
+    const type = k;
+    document.getElementById('zone-'+type).classList.remove('done','over');
+    document.getElementById('icon-'+type).textContent = type==='gmb' ? '📍' : '🔍';
+    document.getElementById('info-'+type).style.display = 'none';
+    document.getElementById('inp-'+type).value = '';
+  });
+  ['step1','step2','step3'].forEach(id => document.getElementById(id).classList.remove('on'));
+  updateBtn();
+  showScreen('upload');
+});
+
+/* ── DOWNLOAD PDF ────────────────────────────────────── */
+document.getElementById('btn-dl').addEventListener('click', ()=>{
+  window.print();
+});
+
+/* ── INIT ────────────────────────────────────────────── */
+updateBtn();
+</script>
+</body>
+</html>
